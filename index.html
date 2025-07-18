@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinCon - Financial Confidence Made Easy! 🚀</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1 class="logo">💰 FinCon</h1>
+            <p class="tagline">Your Financial Confidence Booster! 🇲🇾</p>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav-tabs">
+            <button class="tab-btn active" onclick="showTab('retirement')">
+                🏝️ Retirement Dreams
+            </button>
+            <button class="tab-btn" onclick="showTab('loan')">
+                🏠 Loan Calculator
+            </button>
+        </nav>
+
+        <!-- Retirement Calculator Tab -->
+        <div id="retirement" class="tab-content active">
+            <div class="calculator-section">
+                <h2>🏝️ Retirement Corpus Calculator</h2>
+                <div class="explanation-box">
+                    <h3>What's This About? 🤔</h3>
+                    <p>Retirement corpus is basically your "chill fund" - the money you need to have saved up so you can live comfortably without working! Think of it as your ticket to freedom where you can lepak at the beach instead of rushing to work every morning.</p>
+                    <p>In Malaysia, with our amazing food and lifestyle, you'll want to make sure you have enough to enjoy your teh tarik and roti canai without worrying about money! 🍜</p>
+                </div>
+
+                <div class="input-group">
+                    <label for="currentAge">Your Current Age:</label>
+                    <input type="number" id="currentAge" placeholder="e.g., 25" min="18" max="80">
+                </div>
+
+                <div class="input-group">
+                    <label for="retirementAge">When Do You Want to Retire?</label>
+                    <input type="number" id="retirementAge" placeholder="e.g., 60" min="40" max="80">
+                </div>
+
+                <div class="input-group">
+                    <label for="monthlyExpenses">Monthly Living Expenses (RM):</label>
+                    <input type="number" id="monthlyExpenses" placeholder="e.g., 3000" min="1000">
+                    <small>Include everything: food, rent, utilities, entertainment, medical</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="inflationRate">Inflation Rate (%):</label>
+                    <input type="number" id="inflationRate" placeholder="3" step="0.1" min="0" max="10">
+                    <small>Malaysia's average inflation is around 2-4% per year</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="expectedReturn">Expected Investment Return (%):</label>
+                    <input type="number" id="expectedReturn" placeholder="8" step="0.1" min="0" max="20">
+                    <small>Malaysian equity funds average 6-10% annually</small>
+                </div>
+
+                <button class="calculate-btn" onclick="calculateRetirement()">
+                    Calculate My Freedom Fund! 🚀
+                </button>
+
+                <div id="retirementResult" class="result-section" style="display: none;">
+                    <h3>Your Retirement Plan 📊</h3>
+                    <div class="result-grid">
+                        <div class="result-card">
+                            <h4>💰 Total Corpus Needed</h4>
+                            <p class="result-value" id="totalCorpus">RM 0</p>
+                        </div>
+                        <div class="result-card">
+                            <h4>💸 Monthly Savings Required</h4>
+                            <p class="result-value" id="monthlySavings">RM 0</p>
+                        </div>
+                        <div class="result-card">
+                            <h4>📈 Future Monthly Expenses</h4>
+                            <p class="result-value" id="futureExpenses">RM 0</p>
+                        </div>
+                    </div>
+                    <div class="explanation-result">
+                        <h4>What This Means 🎯</h4>
+                        <p id="retirementExplanation"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loan Calculator Tab -->
+        <div id="loan" class="tab-content">
+            <div class="calculator-section">
+                <h2>🏠 Loan Amortization Calculator</h2>
+                <div class="explanation-box">
+                    <h3>What's Amortization? 🤷‍♂️</h3>
+                    <p>Amortization is just a fancy word for "how your loan payments work over time." Every month, part of your payment goes to interest (the bank's profit) and part goes to paying down the actual loan amount.</p>
+                    <p>In Malaysia, most home loans have reducing balance interest - meaning as you pay more, the interest gets smaller. It's like eating a kuih layer by layer! 🧁</p>
+                </div>
+
+                <div class="input-group">
+                    <label for="loanAmount">Loan Amount (RM):</label>
+                    <input type="number" id="loanAmount" placeholder="e.g., 500000" min="10000">
+                    <small>Your dream home price minus down payment</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="interestRate">Interest Rate (% per year):</label>
+                    <input type="number" id="interestRate" placeholder="4.5" step="0.1" min="0" max="15">
+                    <small>Malaysian home loans are typically 3.5-5.5%</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="loanTerm">Loan Term (years):</label>
+                    <input type="number" id="loanTerm" placeholder="30" min="1" max="40">
+                    <small>Most Malaysian home loans are 25-35 years</small>
+                </div>
+
+                <button class="calculate-btn" onclick="calculateLoan()">
+                    Show Me My Payment Plan! 🏡
+                </button>
+
+                <div id="loanResult" class="result-section" style="display: none;">
+                    <h3>Your Loan Breakdown 📋</h3>
+                    <div class="result-grid">
+                        <div class="result-card">
+                            <h4>💳 Monthly Payment</h4>
+                            <p class="result-value" id="monthlyPayment">RM 0</p>
+                        </div>
+                        <div class="result-card">
+                            <h4>💰 Total Interest</h4>
+                            <p class="result-value" id="totalInterest">RM 0</p>
+                        </div>
+                        <div class="result-card">
+                            <h4>📊 Total Amount Paid</h4>
+                            <p class="result-value" id="totalPaid">RM 0</p>
+                        </div>
+                    </div>
+                    <div class="explanation-result">
+                        <h4>The Real Deal 💡</h4>
+                        <p id="loanExplanation"></p>
+                    </div>
+                    <div class="amortization-schedule">
+                        <h4>Payment Schedule (First 12 Months) 📅</h4>
+                        <div class="schedule-container">
+                            <table id="scheduleTable">
+                                <thead>
+                                    <tr>
+                                        <th>Month</th>
+                                        <th>Payment</th>
+                                        <th>Interest</th>
+                                        <th>Principal</th>
+                                        <th>Balance</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="scheduleBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Made with ❤️ for Malaysians | Always consult a financial advisor for major decisions!</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
