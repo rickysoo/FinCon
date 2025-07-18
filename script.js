@@ -211,6 +211,69 @@ function generateAmortizationSchedule(principalAmount, monthlyRate, monthlyPayme
     }
 }
 
+// Register Service Worker for PWA
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js')
+            .then(function(registration) {
+                console.log('FinCon: Service Worker registered successfully:', registration.scope);
+            })
+            .catch(function(error) {
+                console.log('FinCon: Service Worker registration failed:', error);
+            });
+    });
+}
+
+// PWA Install prompt
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    showInstallPromotion();
+});
+
+function showInstallPromotion() {
+    const installBanner = document.createElement('div');
+    installBanner.innerHTML = `
+        <div style="position: fixed; top: 0; left: 0; right: 0; background: #2c3e50; color: white; padding: 10px; text-align: center; z-index: 1000;">
+            <span>📱 Install FinCon app for offline access!</span>
+            <button id="installBtn" style="margin-left: 10px; padding: 5px 10px; background: #3498db; color: white; border: none; border-radius: 3px; cursor: pointer;">Install</button>
+            <button id="dismissBtn" style="margin-left: 5px; padding: 5px 10px; background: transparent; color: white; border: 1px solid white; border-radius: 3px; cursor: pointer;">Later</button>
+        </div>
+    `;
+    document.body.appendChild(installBanner);
+    
+    document.getElementById('installBtn').addEventListener('click', installApp);
+    document.getElementById('dismissBtn').addEventListener('click', () => {
+        document.body.removeChild(installBanner);
+    });
+}
+
+function installApp() {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+                console.log('FinCon: User accepted the install prompt');
+            } else {
+                console.log('FinCon: User dismissed the install prompt');
+            }
+            deferredPrompt = null;
+        });
+    }
+}
+
+// Handle app shortcuts
+if ('serviceWorker' in navigator) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tab = urlParams.get('tab');
+    if (tab) {
+        setTimeout(() => {
+            showTab(tab);
+        }, 100);
+    }
+}
+
 // Add some interactive features
 document.addEventListener('DOMContentLoaded', function() {
     // Add input validation and real-time feedback
