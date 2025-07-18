@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinCon Test Suite</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-case {
+            margin: 15px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-pass {
+            background: #d4edda;
+            border-color: #c3e6cb;
+        }
+        .test-fail {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        .test-pending {
+            background: #fff3cd;
+            border-color: #ffeaa7;
+        }
+        .test-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .test-details {
+            font-size: 14px;
+            color: #666;
+        }
+        .test-result {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .pass { color: #28a745; }
+        .fail { color: #dc3545; }
+        .pending { color: #ffc107; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .calculations {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 FinCon Test Suite</h1>
+    
+    <div class="test-container">
+        <h2>🏝️ Retirement Calculator Tests</h2>
+        <button onclick="runRetirementTests()">Run All Retirement Tests</button>
+        <div id="retirement-tests"></div>
+    </div>
+
+    <div class="test-container">
+        <h2>🏠 Loan Calculator Tests</h2>
+        <button onclick="runLoanTests()">Run All Loan Tests</button>
+        <div id="loan-tests"></div>
+    </div>
+
+    <div class="test-container">
+        <h2>📊 Test Summary</h2>
+        <div id="test-summary"></div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Test cases and results
+        let testResults = [];
+
+        // Retirement Calculator Test Cases
+        const retirementTestCases = [
+            {
+                name: "Basic Retirement Calculation",
+                inputs: {
+                    currentAge: 25,
+                    retirementAge: 60,
+                    monthlyExpenses: 3000,
+                    inflationRate: 3,
+                    expectedReturn: 8
+                },
+                expected: {
+                    yearsToRetirement: 35,
+                    futureMonthlyExpenses: 8481, // 3000 * (1.03)^35
+                    corpusNeeded: 2544300, // 8481 * 12 * 25
+                    monthlySavings: 735 // approximately
+                }
+            },
+            {
+                name: "High Inflation Scenario",
+                inputs: {
+                    currentAge: 30,
+                    retirementAge: 65,
+                    monthlyExpenses: 5000,
+                    inflationRate: 5,
+                    expectedReturn: 10
+                },
+                expected: {
+                    yearsToRetirement: 35,
+                    futureMonthlyExpenses: 27567, // 5000 * (1.05)^35
+                    corpusNeeded: 8270100, // 27567 * 12 * 25
+                    monthlySavings: 1834 // approximately
+                }
+            },
+            {
+                name: "Conservative Investment",
+                inputs: {
+                    currentAge: 35,
+                    retirementAge: 55,
+                    monthlyExpenses: 4000,
+                    inflationRate: 2.5,
+                    expectedReturn: 6
+                },
+                expected: {
+                    yearsToRetirement: 20,
+                    futureMonthlyExpenses: 6553, // 4000 * (1.025)^20
+                    corpusNeeded: 1965900, // 6553 * 12 * 25
+                    monthlySavings: 5332 // approximately
+                }
+            },
+            {
+                name: "Late Starter",
+                inputs: {
+                    currentAge: 45,
+                    retirementAge: 65,
+                    monthlyExpenses: 3500,
+                    inflationRate: 3.5,
+                    expectedReturn: 7
+                },
+                expected: {
+                    yearsToRetirement: 20,
+                    futureMonthlyExpenses: 6975, // 3500 * (1.035)^20
+                    corpusNeeded: 2092500, // 6975 * 12 * 25
+                    monthlySavings: 5143 // approximately
+                }
+            }
+        ];
+
+        // Loan Calculator Test Cases
+        const loanTestCases = [
+            {
+                name: "Standard 30-Year Home Loan",
+                inputs: {
+                    loanAmount: 500000,
+                    interestRate: 4.5,
+                    loanTerm: 30
+                },
+                expected: {
+                    monthlyPayment: 2533.43,
+                    totalInterest: 412035.48,
+                    totalPaid: 912035.48
+                }
+            },
+            {
+                name: "Shorter Term Higher Payment",
+                inputs: {
+                    loanAmount: 300000,
+                    interestRate: 3.8,
+                    loanTerm: 15
+                },
+                expected: {
+                    monthlyPayment: 2190.84,
+                    totalInterest: 94351.2,
+                    totalPaid: 394351.2
+                }
+            },
+            {
+                name: "High Interest Rate Scenario",
+                inputs: {
+                    loanAmount: 400000,
+                    interestRate: 6.5,
+                    loanTerm: 25
+                },
+                expected: {
+                    monthlyPayment: 2734.29,
+                    totalInterest: 420287,
+                    totalPaid: 820287
+                }
+            },
+            {
+                name: "Low Interest Rate Scenario",
+                inputs: {
+                    loanAmount: 600000,
+                    interestRate: 2.8,
+                    loanTerm: 35
+                },
+                expected: {
+                    monthlyPayment: 2338.67,
+                    totalInterest: 382244.4,
+                    totalPaid: 982244.4
+                }
+            }
+        ];
+
+        function runRetirementTests() {
+            const container = document.getElementById('retirement-tests');
+            container.innerHTML = '';
+            
+            retirementTestCases.forEach((testCase, index) => {
+                const testDiv = document.createElement('div');
+                testDiv.className = 'test-case test-pending';
+                testDiv.innerHTML = `
+                    <div class="test-title">${testCase.name}</div>
+                    <div class="test-details">
+                        <strong>Inputs:</strong> Age ${testCase.inputs.currentAge} → ${testCase.inputs.retirementAge}, 
+                        Monthly expenses: RM${testCase.inputs.monthlyExpenses}, 
+                        Inflation: ${testCase.inputs.inflationRate}%, 
+                        Return: ${testCase.inputs.expectedReturn}%
+                    </div>
+                    <div class="calculations" id="calc-${index}">Running test...</div>
+                    <div class="test-result pending" id="result-${index}">⏳ Running...</div>
+                `;
+                container.appendChild(testDiv);
+                
+                // Run the actual calculation
+                setTimeout(() => {
+                    const result = calculateRetirementTest(testCase.inputs);
+                    const passed = validateRetirementResult(result, testCase.expected);
+                    
+                    document.getElementById(`calc-${index}`).innerHTML = `
+                        <strong>Calculated:</strong><br>
+                        • Years to retirement: ${result.yearsToRetirement}<br>
+                        • Future monthly expenses: RM${result.futureMonthlyExpenses}<br>
+                        • Corpus needed: RM${result.corpusNeeded}<br>
+                        • Monthly savings: RM${result.monthlySavings}<br>
+                        <strong>Expected:</strong><br>
+                        • Years to retirement: ${testCase.expected.yearsToRetirement}<br>
+                        • Future monthly expenses: RM${testCase.expected.futureMonthlyExpenses}<br>
+                        • Corpus needed: RM${testCase.expected.corpusNeeded}<br>
+                        • Monthly savings: RM${testCase.expected.monthlySavings}
+                    `;
+                    
+                    if (passed.overall) {
+                        testDiv.className = 'test-case test-pass';
+                        document.getElementById(`result-${index}`).innerHTML = `✅ <span class="pass">PASSED</span>`;
+                    } else {
+                        testDiv.className = 'test-case test-fail';
+                        document.getElementById(`result-${index}`).innerHTML = `❌ <span class="fail">FAILED</span><br><small>${passed.details}</small>`;
+                    }
+                    
+                    testResults.push({
+                        type: 'retirement',
+                        name: testCase.name,
+                        passed: passed.overall
+                    });
+                    
+                    updateTestSummary();
+                }, index * 100);
+            });
+        }
+
+        function runLoanTests() {
+            const container = document.getElementById('loan-tests');
+            container.innerHTML = '';
+            
+            loanTestCases.forEach((testCase, index) => {
+                const testDiv = document.createElement('div');
+                testDiv.className = 'test-case test-pending';
+                testDiv.innerHTML = `
+                    <div class="test-title">${testCase.name}</div>
+                    <div class="test-details">
+                        <strong>Inputs:</strong> Loan RM${testCase.inputs.loanAmount}, 
+                        Rate ${testCase.inputs.interestRate}%, 
+                        Term ${testCase.inputs.loanTerm} years
+                    </div>
+                    <div class="calculations" id="loan-calc-${index}">Running test...</div>
+                    <div class="test-result pending" id="loan-result-${index}">⏳ Running...</div>
+                `;
+                container.appendChild(testDiv);
+                
+                // Run the actual calculation
+                setTimeout(() => {
+                    const result = calculateLoanTest(testCase.inputs);
+                    const passed = validateLoanResult(result, testCase.expected);
+                    
+                    document.getElementById(`loan-calc-${index}`).innerHTML = `
+                        <strong>Calculated:</strong><br>
+                        • Monthly payment: RM${result.monthlyPayment}<br>
+                        • Total interest: RM${result.totalInterest}<br>
+                        • Total paid: RM${result.totalPaid}<br>
+                        <strong>Expected:</strong><br>
+                        • Monthly payment: RM${testCase.expected.monthlyPayment}<br>
+                        • Total interest: RM${testCase.expected.totalInterest}<br>
+                        • Total paid: RM${testCase.expected.totalPaid}
+                    `;
+                    
+                    if (passed.overall) {
+                        testDiv.className = 'test-case test-pass';
+                        document.getElementById(`loan-result-${index}`).innerHTML = `✅ <span class="pass">PASSED</span>`;
+                    } else {
+                        testDiv.className = 'test-case test-fail';
+                        document.getElementById(`loan-result-${index}`).innerHTML = `❌ <span class="fail">FAILED</span><br><small>${passed.details}</small>`;
+                    }
+                    
+                    testResults.push({
+                        type: 'loan',
+                        name: testCase.name,
+                        passed: passed.overall
+                    });
+                    
+                    updateTestSummary();
+                }, index * 100);
+            });
+        }
+
+        function calculateRetirementTest(inputs) {
+            const yearsToRetirement = inputs.retirementAge - inputs.currentAge;
+            const inflationRate = inputs.inflationRate / 100;
+            const expectedReturn = inputs.expectedReturn / 100;
+            
+            const futureMonthlyExpenses = inputs.monthlyExpenses * Math.pow(1 + inflationRate, yearsToRetirement);
+            const annualExpensesAtRetirement = futureMonthlyExpenses * 12;
+            const corpusNeeded = annualExpensesAtRetirement * 25;
+            
+            const monthlyInterestRate = expectedReturn / 12;
+            const totalMonths = yearsToRetirement * 12;
+            
+            let monthlySavingsRequired;
+            if (expectedReturn === 0) {
+                monthlySavingsRequired = corpusNeeded / totalMonths;
+            } else {
+                monthlySavingsRequired = corpusNeeded / (((Math.pow(1 + monthlyInterestRate, totalMonths) - 1) / monthlyInterestRate));
+            }
+            
+            return {
+                yearsToRetirement: yearsToRetirement,
+                futureMonthlyExpenses: Math.round(futureMonthlyExpenses),
+                corpusNeeded: Math.round(corpusNeeded),
+                monthlySavings: Math.round(monthlySavingsRequired)
+            };
+        }
+
+        function calculateLoanTest(inputs) {
+            const loanAmount = inputs.loanAmount;
+            const annualRate = inputs.interestRate / 100;
+            const loanTermYears = inputs.loanTerm;
+            
+            const monthlyRate = annualRate / 12;
+            const totalPayments = loanTermYears * 12;
+            
+            let monthlyPayment;
+            if (annualRate === 0) {
+                monthlyPayment = loanAmount / totalPayments;
+            } else {
+                monthlyPayment = loanAmount * (monthlyRate * Math.pow(1 + monthlyRate, totalPayments)) / 
+                                (Math.pow(1 + monthlyRate, totalPayments) - 1);
+            }
+            
+            const totalAmountPaid = monthlyPayment * totalPayments;
+            const totalInterest = totalAmountPaid - loanAmount;
+            
+            return {
+                monthlyPayment: Math.round(monthlyPayment * 100) / 100,
+                totalInterest: Math.round(totalInterest * 100) / 100,
+                totalPaid: Math.round(totalAmountPaid * 100) / 100
+            };
+        }
+
+        function validateRetirementResult(result, expected) {
+            const tolerance = 0.05; // 5% tolerance
+            const details = [];
+            
+            const yearsMatch = result.yearsToRetirement === expected.yearsToRetirement;
+            const expensesMatch = Math.abs(result.futureMonthlyExpenses - expected.futureMonthlyExpenses) / expected.futureMonthlyExpenses < tolerance;
+            const corpusMatch = Math.abs(result.corpusNeeded - expected.corpusNeeded) / expected.corpusNeeded < tolerance;
+            const savingsMatch = Math.abs(result.monthlySavings - expected.monthlySavings) / expected.monthlySavings < tolerance;
+            
+            if (!yearsMatch) details.push("Years to retirement mismatch");
+            if (!expensesMatch) details.push("Future expenses calculation off by more than 5%");
+            if (!corpusMatch) details.push("Corpus calculation off by more than 5%");
+            if (!savingsMatch) details.push("Monthly savings calculation off by more than 5%");
+            
+            return {
+                overall: yearsMatch && expensesMatch && corpusMatch && savingsMatch,
+                details: details.join(", ")
+            };
+        }
+
+        function validateLoanResult(result, expected) {
+            const tolerance = 0.01; // 1% tolerance for financial calculations
+            const details = [];
+            
+            const paymentMatch = Math.abs(result.monthlyPayment - expected.monthlyPayment) / expected.monthlyPayment < tolerance;
+            const interestMatch = Math.abs(result.totalInterest - expected.totalInterest) / expected.totalInterest < tolerance;
+            const totalMatch = Math.abs(result.totalPaid - expected.totalPaid) / expected.totalPaid < tolerance;
+            
+            if (!paymentMatch) details.push("Monthly payment calculation off by more than 1%");
+            if (!interestMatch) details.push("Total interest calculation off by more than 1%");
+            if (!totalMatch) details.push("Total paid calculation off by more than 1%");
+            
+            return {
+                overall: paymentMatch && interestMatch && totalMatch,
+                details: details.join(", ")
+            };
+        }
+
+        function updateTestSummary() {
+            const summaryDiv = document.getElementById('test-summary');
+            const totalTests = testResults.length;
+            const passedTests = testResults.filter(test => test.passed).length;
+            const failedTests = totalTests - passedTests;
+            
+            summaryDiv.innerHTML = `
+                <h3>Test Results Summary</h3>
+                <p><strong>Total Tests:</strong> ${totalTests}</p>
+                <p><strong>Passed:</strong> <span class="pass">${passedTests}</span></p>
+                <p><strong>Failed:</strong> <span class="fail">${failedTests}</span></p>
+                <p><strong>Success Rate:</strong> ${totalTests > 0 ? ((passedTests / totalTests) * 100).toFixed(1) : 0}%</p>
+            `;
+        }
+
+        // Run all tests on page load
+        window.onload = function() {
+            console.log('FinCon Test Suite loaded');
+        };
+    </script>
+</body>
+</html>

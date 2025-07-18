@@ -17,6 +17,15 @@ function showTab(tabName) {
     
     // Add active class to clicked button
     event.target.classList.add('active');
+    
+    // Track tab switching event
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'tab_switch', {
+            'event_category': 'Navigation',
+            'event_label': tabName === 'retirement' ? 'Retirement Calculator' : 'Loan Calculator',
+            'value': 1
+        });
+    }
 }
 
 // Format currency for Malaysian Ringgit
@@ -52,6 +61,21 @@ function calculateRetirement() {
     if (currentAge >= retirementAge) {
         alert('Your retirement age should be higher than your current age! 😉');
         return;
+    }
+    
+    // Track calculation event
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'retirement_calculation', {
+            'event_category': 'Calculator',
+            'event_label': 'Retirement Planning',
+            'value': Math.round(monthlyExpenses),
+            'custom_parameters': {
+                'age_range': `${currentAge}-${retirementAge}`,
+                'years_to_retirement': retirementAge - currentAge,
+                'inflation_rate': inflationRate * 100,
+                'expected_return': expectedReturn * 100
+            }
+        });
     }
     
     // Calculate years to retirement
@@ -126,6 +150,20 @@ function calculateLoan() {
     if (!loanAmount || !annualRate || !loanTermYears || loanAmount <= 0 || annualRate < 0 || loanTermYears <= 0) {
         alert('Please fill in all fields with valid numbers! 😊');
         return;
+    }
+    
+    // Track calculation event
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'loan_calculation', {
+            'event_category': 'Calculator',
+            'event_label': 'Loan Planning',
+            'value': Math.round(loanAmount),
+            'custom_parameters': {
+                'loan_amount_range': getLoanAmountRange(loanAmount),
+                'interest_rate': annualRate * 100,
+                'loan_term_years': loanTermYears
+            }
+        });
     }
     
     // Calculate monthly payment
@@ -255,8 +293,24 @@ function installApp() {
         deferredPrompt.userChoice.then((choiceResult) => {
             if (choiceResult.outcome === 'accepted') {
                 console.log('FinCon: User accepted the install prompt');
+                // Track PWA install event
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'pwa_install', {
+                        'event_category': 'PWA',
+                        'event_label': 'Install Accepted',
+                        'value': 1
+                    });
+                }
             } else {
                 console.log('FinCon: User dismissed the install prompt');
+                // Track PWA install dismissal
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'pwa_install_dismissed', {
+                        'event_category': 'PWA',
+                        'event_label': 'Install Dismissed',
+                        'value': 1
+                    });
+                }
             }
             deferredPrompt = null;
         });
@@ -322,12 +376,38 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('loanTerm').value = 30;
 });
 
+// Helper function to categorize loan amounts
+function getLoanAmountRange(amount) {
+    if (amount < 100000) return 'Under 100k';
+    if (amount < 300000) return '100k-300k';
+    if (amount < 500000) return '300k-500k';
+    if (amount < 1000000) return '500k-1M';
+    return 'Over 1M';
+}
+
+// Track page load event
+if (typeof gtag !== 'undefined') {
+    gtag('event', 'page_view', {
+        'event_category': 'Engagement',
+        'event_label': 'App Load',
+        'value': 1
+    });
+}
+
 // Add some fun easter eggs
 let clickCount = 0;
 document.querySelector('.logo').addEventListener('click', function() {
     clickCount++;
     if (clickCount === 5) {
         alert('🎉 You found the easter egg! Remember: The best time to invest was yesterday, the second best time is today! 💪');
+        // Track easter egg discovery
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'easter_egg_found', {
+                'event_category': 'Engagement',
+                'event_label': 'Logo Click Easter Egg',
+                'value': 1
+            });
+        }
         clickCount = 0;
     }
 });
