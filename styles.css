@@ -29,6 +29,8 @@ body {
     background-position: center;
     vertical-align: middle;
     margin-left: 5px;
+    font-size: 0; /* Hide the emoji text on desktop */
+    text-indent: -9999px; /* Additional fallback to hide text */
 }
 
 /* Show emoji on mobile devices that support it */
@@ -38,6 +40,7 @@ body {
         width: auto;
         height: auto;
         font-size: 1.2em;
+        text-indent: 0; /* Reset text hiding on mobile */
     }
 }
 
