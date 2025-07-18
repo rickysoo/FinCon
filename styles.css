@@ -18,6 +18,29 @@ body {
     font-family: 'Poppins', 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
 }
 
+/* Malaysian flag with fallback for desktop */
+.malaysia-flag {
+    display: inline-block;
+    width: 20px;
+    height: 14px;
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMTQiIHZpZXdCb3g9IjAgMCAyMCAxNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPCEtLSBNYWxheXNpYW4gRmxhZyAtLT4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwKSI+CjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIxNCIgZmlsbD0iI0ZGRkZGRiIvPgo8IS0tIFJlZCBzdHJpcGVzIC0tPgo8cmVjdCB3aWR0aD0iMjAiIGhlaWdodD0iMSIgZmlsbD0iI0RDMTQzQyIvPgo8cmVjdCB5PSIyIiB3aWR0aD0iMjAiIGhlaWdodD0iMSIgZmlsbD0iI0RDMTQzQyIvPgo8cmVjdCB5PSI0IiB3aWR0aD0iMjAiIGhlaWdodD0iMSIgZmlsbD0iI0RDMTQzQyIvPgo8cmVjdCB5PSI2IiB3aWR0aD0iMjAiIGhlaWdodD0iMSIgZmlsbD0iI0RDMTQzQyIvPgo8cmVjdCB5PSI4IiB3aWR0aD0iMjAiIGhlaWdodD0iMSIgZmlsbD0iI0RDMTQzQyIvPgo8cmVjdCB5PSIxMCIgd2lkdGg9IjIwIiBoZWlnaHQ9IjEiIGZpbGw9IiNEQzE0M0MiLz4KPHJlY3QgeT0iMTIiIHdpZHRoPSIyMCIgaGVpZ2h0PSIxIiBmaWxsPSIjREMxNDNDIi8+CjwhLS0gQmx1ZSByZWN0YW5nbGUgLS0+CjxyZWN0IHdpZHRoPSI5IiBoZWlnaHQ9IjgiIGZpbGw9IiMwMDIzOTEiLz4KPCEtLSBDcmVzY2VudCAtLT4KPHBhdGggZD0iTTMuNSA0QzMuNSAyLjg5NTQzIDQuMzk1NDMgMiA1LjUgMkM2LjYwNDU3IDIgNy41IDIuODk1NDMgNy41IDRDNy41IDUuMTA0NTcgNi42MDQ1NyA2IDUuNSA2QzQuMzk1NDMgNiAzLjUgNS4xMDQ1NyAzLjUgNFoiIGZpbGw9IiNGRkNBMjgiLz4KPHBhdGggZD0iTTQuNSA0QzQuNSAzLjQ0NzcyIDQuOTQ3NzIgMyA1LjUgM0M2LjA1MjI4IDMgNi41IDMuNDQ3NzIgNi41IDRDNi41IDQuNTUyMjggNi4wNTIyOCA1IDUuNSA1QzQuOTQ3NzIgNSA0LjUgNC41NTIyOCA0LjUgNFoiIGZpbGw9IiMwMDIzOTEiLz4KPCEtLSBTdGFyIC0tPgo8cGF0aCBkPSJNNS41IDEuNUw1Ljc1IDIuMjVINi41TDUuODc1IDIuNzVMNi4xMjUgMy41TDUuNSAzTDQuODc1IDMuNUw1LjEyNSAyLjc1TDQuNSAyLjI1SDUuMjVMNS41IDEuNVoiIGZpbGw9IiNGRkNBMjgiLz4KPC9nPgo8ZGVmcz4KPGNsaXBQYXRoIGlkPSJjbGlwMCI+CjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIxNCIgZmlsbD0id2hpdGUiLz4KPC9jbGlwUGF0aD4KPC9kZWZzPgo8L3N2Zz4K');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    vertical-align: middle;
+    margin-left: 5px;
+}
+
+/* Show emoji on mobile devices that support it */
+@media (max-width: 768px) {
+    .malaysia-flag {
+        background-image: none;
+        width: auto;
+        height: auto;
+        font-size: 1.2em;
+    }
+}
+
 .container {
     max-width: 1200px;
     margin: 0 auto;
