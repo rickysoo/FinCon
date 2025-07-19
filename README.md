@@ -8,6 +8,27 @@ A user-friendly financial calculator Progressive Web App (PWA) designed specific
 
 📱 **Install as App**: Look for the "Install" button in your browser or "Add to Home Screen" option to install FinCon as a native app on your device!
 
+## 🔧 Setup for Dynamic AI Explanations
+
+FinCon now supports dynamic, personalized explanations powered by OpenAI's GPT-3.5-turbo. To enable this feature:
+
+### Method 1: Configuration File (Recommended for developers)
+1. Copy `config.example.js` to `config.js`
+2. Add your OpenAI API key to the `config.js` file
+3. The `config.js` file is automatically ignored by git for security
+
+### Method 2: Browser Input (For end users)
+1. Enter your API key in the input field at the top of the app
+2. The key will be stored securely in your browser's localStorage
+3. Clear the field to disable dynamic explanations
+
+### Getting an OpenAI API Key
+1. Visit [OpenAI Platform](https://platform.openai.com/api-keys)
+2. Create an account and generate an API key
+3. Add billing information (GPT-3.5-turbo costs ~$0.002 per explanation)
+
+**Note**: Without an API key, the app works perfectly with pre-written static explanations.
+
 ## 🚀 Features
 
 ### 🏝️ Retirement Dreams Calculator

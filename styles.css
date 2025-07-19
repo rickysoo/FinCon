@@ -18,6 +18,54 @@ body {
     font-family: 'Poppins', 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
 }
 
+/* Loading animation for AI explanations */
+.loading-explanation {
+    padding: 20px;
+    text-align: center;
+    font-style: italic;
+    color: #666;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading-shimmer 1.5s infinite;
+    border-radius: 8px;
+    margin: 10px 0;
+}
+
+@keyframes loading-shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+/* API Key Configuration styling */
+.api-config {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 20px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.api-config input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.api-config small {
+    color: #fff;
+    opacity: 0.8;
+    display: block;
+    margin-top: 5px;
+}
+
 /* Malaysian flag with fallback for desktop */
 .malaysia-flag {
     display: inline-block;
