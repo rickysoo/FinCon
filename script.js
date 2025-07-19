@@ -270,19 +270,46 @@ async function calculateRetirement() {
         } else {
             // Fallback to enhanced static explanation
             const savingsPercentage = ((monthlySavingsRequired / monthlyExpenses) * 100).toFixed(1);
+            
+            let timelineMessage = '';
+            if (yearsToRetirement > 30) {
+                timelineMessage = 'Excellent! Starting early gives you a significant advantage with compound growth.';
+            } else if (yearsToRetirement > 20) {
+                timelineMessage = 'Good timing! You have sufficient time to build a solid retirement fund.';
+            } else if (yearsToRetirement > 10) {
+                timelineMessage = 'Time to accelerate your retirement planning, but it\'s definitely achievable.';
+            } else {
+                timelineMessage = 'You\'re in the final stretch - every contribution counts significantly now.';
+            }
+            
             const staticExplanation = `
-                <strong>Your Retirement Roadmap:</strong><br><br>
+                <h3>Your Retirement Analysis</h3>
+                <p>${timelineMessage}</p>
                 
-                • You have ${yearsToRetirement} years to build your freedom fund<br>
-                • With ${(inflationRate * 100).toFixed(1)}% inflation, your RM${formatNumber(monthlyExpenses)} lifestyle will cost RM${formatNumber(Math.round(futureMonthlyExpenses))} when you retire<br>
-                • Target corpus: ${formatCurrency(corpusNeeded)} using the 25x rule<br>
-                • Monthly savings needed: RM${formatNumber(Math.round(monthlySavingsRequired))} (${savingsPercentage}% of current expenses)<br><br>
+                <strong>Your Financial Picture:</strong>
+                <ul>
+                    <li>Time to retirement: ${yearsToRetirement} years</li>
+                    <li>Monthly savings required: RM${formatNumber(Math.round(monthlySavingsRequired))} (${savingsPercentage}% of current expenses)</li>
+                    <li>Retirement corpus target: ${formatCurrency(corpusNeeded)}</li>
+                    <li>Future monthly expenses: RM${formatNumber(Math.round(futureMonthlyExpenses))} (adjusted for ${(inflationRate * 100).toFixed(1)}% inflation)</li>
+                </ul>
                 
-                <strong>Malaysian Investment Options:</strong><br>
-                • Max out EPF contributions - employer matching is free money!<br>
-                • Consider unit trusts (Public Mutual, CIMB Principal)<br>
-                • ASB/ASW for guaranteed returns (if eligible)<br>
-                • REITs for property exposure without the hassle
+                <strong>Malaysian Investment Strategy:</strong>
+                <ul>
+                    <li>Maximize EPF contributions - employer matching provides immediate returns</li>
+                    <li>Consider unit trust funds from local providers (Public Mutual, CIMB Principal)</li>
+                    <li>ASB/ASW for stable, tax-free returns (if eligible)</li>
+                    <li>REITs for diversified property exposure</li>
+                </ul>
+                
+                <strong>Next Steps:</strong>
+                <ul>
+                    <li>Set up automatic monthly transfers to investment accounts</li>
+                    <li>Review and adjust your plan annually</li>
+                    <li>Consider increasing contributions with salary increments</li>
+                </ul>
+                
+                <p><em><strong>Disclaimer:</strong> This calculation provides general guidance only. Please consult with a qualified financial planner for personalized advice tailored to your specific situation.</em></p>
             `;
             explanationElement.innerHTML = staticExplanation;
         }
@@ -387,18 +414,43 @@ async function calculateLoan() {
         } else {
             // Fallback to enhanced static explanation
             const interestPercentage = (totalInterest / loanAmount * 100).toFixed(1);
+            
+            let assessmentMessage = '';
+            if (loanAmount < 300000) {
+                assessmentMessage = 'This loan amount is reasonable for most Malaysian households.';
+            } else if (loanAmount < 600000) {
+                assessmentMessage = 'This is a substantial loan - ensure your monthly income can comfortably support the payments.';
+            } else {
+                assessmentMessage = 'This is a significant financial commitment - careful budget planning is essential.';
+            }
+            
             const staticExplanation = `
-                <strong>Your Loan Breakdown:</strong><br><br>
+                <h3>Your Loan Analysis</h3>
+                <p>${assessmentMessage}</p>
                 
-                • Monthly payment: RM${formatNumber(Math.round(monthlyPayment))}<br>
-                • Total interest over ${loanTermYears} years: RM${formatNumber(Math.round(totalInterest))}<br>
-                • Interest adds ${interestPercentage}% to your loan cost<br><br>
+                <strong>Loan Details:</strong>
+                <ul>
+                    <li>Monthly payment: RM${formatNumber(Math.round(monthlyPayment))}</li>
+                    <li>Total interest cost: RM${formatNumber(Math.round(totalInterest))} (${interestPercentage}% of loan amount)</li>
+                    <li>Total amount to pay: RM${formatNumber(Math.round(totalAmountPaid))} over ${loanTermYears} years</li>
+                </ul>
                 
-                <strong>Malaysian Banking Tips:</strong><br>
-                • Most banks allow extra principal payments without penalty<br>
-                • Even RM100 extra monthly can save thousands in interest<br>
-                • Consider refinancing after lock-in period (2-5 years)<br>
-                • Flexi loans offer payment flexibility for irregular income
+                <strong>Malaysian Banking Tips:</strong>
+                <ul>
+                    <li>Most banks allow early partial payments without penalties</li>
+                    <li>Even RM100 extra monthly can reduce total interest significantly</li>
+                    <li>Consider refinancing options after lock-in period (typically 2-5 years)</li>
+                    <li>Flexi home loans offer payment flexibility for variable income</li>
+                </ul>
+                
+                <strong>Interest Reduction Strategies:</strong>
+                <ul>
+                    <li>Use annual bonuses for lump sum principal payments</li>
+                    <li>Round up monthly payments to the nearest hundred</li>
+                    <li>Review and compare rates with other banks regularly</li>
+                </ul>
+                
+                <p><em><strong>Disclaimer:</strong> This analysis provides general guidance only. Please consult with a qualified financial planner for personalized advice tailored to your specific financial situation.</em></p>
             `;
             explanationElement.innerHTML = staticExplanation;
         }
