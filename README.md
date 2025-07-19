@@ -4,7 +4,9 @@ A user-friendly financial calculator Progressive Web App (PWA) designed specific
 
 ## 🌟 Live Demo
 
-**[Try FinCon Now!](https://rickysoo.github.io/FinCon/)**
+**[Try FinCon Now!](https://fincon.vercel.app)**
+
+> 🎯 **NEW**: Now with dynamic AI-powered explanations! The Vercel deployment includes secure backend API for personalized financial advice.
 
 📱 **Install as App**: Look for the "Install" button in your browser or "Add to Home Screen" option to install FinCon as a native app on your device!
 
@@ -50,6 +52,7 @@ To deploy FinCon with secure dynamic explanations (without exposing API keys):
 4. **Deploy**
    - Vercel automatically deploys on every git push
    - Your app will have dynamic AI explanations at your custom Vercel URL
+   - Example: [fincon.vercel.app](https://fincon.vercel.app)
 
 ### Option 2: Deploy to Netlify
 
@@ -70,6 +73,12 @@ To deploy FinCon with secure dynamic explanations (without exposing API keys):
 - **Backend**: Vercel serverless function securely calls OpenAI API
 - **Fallback**: If backend unavailable, falls back to client-side API (if configured) or static explanations
 - **Security**: API key stored as environment variable, never exposed in code
+
+### Deployment Options
+
+- **[fincon.vercel.app](https://fincon.vercel.app)**: Full-featured deployment with dynamic AI explanations
+- **[GitHub Pages](https://rickysoo.github.io/FinCon/)**: Static version with enhanced fallback explanations
+- **Local Development**: Complete functionality with your own API key configuration
 
 ## 🚀 Features
 

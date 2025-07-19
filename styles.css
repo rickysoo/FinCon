@@ -287,7 +287,7 @@ body {
 
 .explanation-result {
     background: linear-gradient(135deg, #fdcb6e, #e17055);
-    padding: 25px;
+    padding: 20px;
     border-radius: 12px;
     color: white;
     margin-top: 20px;
@@ -313,10 +313,10 @@ body {
 .explanation-result h3 {
     color: #fff;
     text-align: left;
-    margin: 20px 0 15px 0;
+    margin: 15px 0 10px 0;
     font-weight: 600;
     border-bottom: 2px solid rgba(255, 255, 255, 0.3);
-    padding-bottom: 8px;
+    padding-bottom: 6px;
 }
 
 .explanation-result h1 {
@@ -336,20 +336,20 @@ body {
     color: #fff;
     font-weight: 600;
     display: block;
-    margin: 15px 0 8px 0;
+    margin: 12px 0 6px 0;
     font-size: 1.1em;
 }
 
 .explanation-result ul,
 .explanation-result ol {
-    margin: 15px 0;
-    padding-left: 25px;
+    margin: 10px 0;
+    padding-left: 20px;
     text-align: left;
 }
 
 .explanation-result li {
-    margin: 8px 0;
-    line-height: 1.6;
+    margin: 4px 0;
+    line-height: 1.5;
     list-style-type: disc;
 }
 
