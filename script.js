@@ -52,14 +52,14 @@ async function generateDynamicExplanation(calculationType, data) {
                 messages: [
                     {
                         role: 'system',
-                        content: 'You are a friendly Malaysian financial advisor who explains complex financial concepts in simple, relatable terms using ENGLISH ONLY. Include Malaysian financial context and local investment options, but write everything in English. Use some Malaysian slang terms like "boleh", "lepak", "wah" sparingly for flavor, but the main explanation must be in English. Keep explanations practical and actionable. Format your response with HTML tags for better readability.'
+                        content: 'You are a friendly Malaysian financial advisor. Write ONLY in English using simple HTML tags (h3, strong, ul, li, p, br). Keep explanations SHORT, practical and encouraging. Use Malaysian financial context. Do NOT include ```html code blocks. Always end with a disclaimer about consulting a financial planner. Use occasional Malaysian slang like "boleh" or "wah" for local flavor.'
                     },
                     {
                         role: 'user',
                         content: prompt
                     }
                 ],
-                max_tokens: 600,
+                max_tokens: 400,
                 temperature: 0.7
             })
         });
@@ -80,47 +80,35 @@ async function generateDynamicExplanation(calculationType, data) {
 function createPromptForCalculation(type, data) {
     if (type === 'retirement') {
         const savingsPercentage = ((data.monthlySavingsRequired / data.monthlyExpenses) * 100).toFixed(1);
-        return `As a friendly Malaysian financial advisor, provide personalized retirement advice based on this calculation:
+        return `Provide a SHORT retirement analysis for a ${data.currentAge}-year-old Malaysian planning to retire at ${data.retirementAge}.
 
-**Personal Details:**
-- Age ${data.currentAge}, retiring at ${data.retirementAge} (${data.yearsToRetirement} years to go)
-- Current monthly expenses: RM${data.monthlyExpenses.toLocaleString()}
-- Expected inflation: ${data.inflationRate}% annually
-- Target investment returns: ${data.expectedReturn}% annually
+Key numbers:
+- Monthly savings needed: RM${Math.round(data.monthlySavingsRequired).toLocaleString()} (${savingsPercentage}% of current RM${data.monthlyExpenses.toLocaleString()} expenses)
+- Retirement corpus target: RM${Math.round(data.corpusNeeded).toLocaleString()}
 
-**Calculated Results:**
-- Future monthly expenses (at retirement): RM${Math.round(data.futureMonthlyExpenses).toLocaleString()}
-- Total retirement corpus needed: RM${Math.round(data.corpusNeeded).toLocaleString()}
-- Monthly savings required: RM${Math.round(data.monthlySavingsRequired).toLocaleString()} (${savingsPercentage}% of current expenses)
+Format with HTML tags. Include:
+- Quick assessment of the savings challenge
+- 2-3 specific Malaysian investment tips (EPF, ASB, unit trusts)
+- One actionable next step
+- Financial planner consultation disclaimer
 
-**Please provide:**
-1. A warm, encouraging opening that addresses their specific timeline and savings challenge
-2. Practical Malaysian investment strategies (EPF, ASB, unit trusts, REITs)
-3. Age-appropriate portfolio allocation advice
-4. Specific tips to make the ${savingsPercentage}% savings rate achievable
-5. Realistic next steps they can take immediately
-
-Write entirely in English with Malaysian financial context. Use HTML formatting and keep it encouraging and actionable!`;
+Keep it under 250 words, encouraging tone, and use "boleh" or "wah" naturally.`;
     } else if (type === 'loan') {
         const interestPercentage = (data.totalInterest / data.loanAmount * 100).toFixed(1);
-        return `As a friendly Malaysian financial advisor, analyze this loan and provide practical advice:
+        return `Provide a SHORT loan analysis for a Malaysian borrower.
 
-**Loan Details:**
-- Loan amount: RM${data.loanAmount.toLocaleString()}
-- Interest rate: ${data.interestRate}% per year
-- Loan term: ${data.loanTermYears} years
+Key numbers:
+- Loan: RM${data.loanAmount.toLocaleString()} at ${data.interestRate}% for ${data.loanTermYears} years
 - Monthly payment: RM${Math.round(data.monthlyPayment).toLocaleString()}
-- Total interest cost: RM${Math.round(data.totalInterest).toLocaleString()} (${interestPercentage}% of loan amount)
-- Total amount to be paid: RM${Math.round(data.totalAmountPaid).toLocaleString()}
+- Total interest: RM${Math.round(data.totalInterest).toLocaleString()} (${interestPercentage}% extra cost)
 
-**Please provide:**
-1. An honest assessment of whether this loan is reasonable for Malaysian standards
-2. Explanation of how the interest breakdown works over time
-3. Specific Malaysian banking tips (early payment, refinancing, flexi loans)
-4. Practical strategies to reduce total interest paid
-5. Budget planning advice for managing this monthly commitment
+Format with HTML tags. Include:
+- Quick assessment if this is reasonable for Malaysian standards
+- 2-3 specific tips to reduce interest (early payment, refinancing)
+- One budget management tip
+- Financial planner consultation disclaimer
 
-Write entirely in English with Malaysian financial context. Use HTML formatting and focus on actionable advice they can implement immediately!`;
+Keep it under 250 words, practical tone, and use "boleh" naturally.`;
     }
 }
 

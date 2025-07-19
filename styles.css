@@ -287,20 +287,88 @@ body {
 
 .explanation-result {
     background: linear-gradient(135deg, #fdcb6e, #e17055);
-    padding: 20px;
-    border-radius: 10px;
+    padding: 25px;
+    border-radius: 12px;
     color: white;
     margin-top: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .explanation-result h4 {
-    margin-bottom: 10px;
-    font-size: 1.3em;
+    margin-bottom: 15px;
+    font-size: 1.4em;
+    font-weight: 600;
+    text-align: left;
 }
 
 .explanation-result p {
     font-size: 1em;
+    line-height: 1.7;
+    text-align: left;
+}
+
+/* Enhanced styling for LLM-generated content */
+.explanation-result h1,
+.explanation-result h2,
+.explanation-result h3 {
+    color: #fff;
+    text-align: left;
+    margin: 20px 0 15px 0;
+    font-weight: 600;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+    padding-bottom: 8px;
+}
+
+.explanation-result h1 {
+    font-size: 1.6em;
+    margin-top: 0;
+}
+
+.explanation-result h2 {
+    font-size: 1.4em;
+}
+
+.explanation-result h3 {
+    font-size: 1.2em;
+}
+
+.explanation-result strong {
+    color: #fff;
+    font-weight: 600;
+    display: block;
+    margin: 15px 0 8px 0;
+    font-size: 1.1em;
+}
+
+.explanation-result ul,
+.explanation-result ol {
+    margin: 15px 0;
+    padding-left: 25px;
+    text-align: left;
+}
+
+.explanation-result li {
+    margin: 8px 0;
     line-height: 1.6;
+    list-style-type: disc;
+}
+
+.explanation-result ul li::marker {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Improved bullet points for better readability */
+.explanation-result p:has(br) {
+    white-space: pre-line;
+}
+
+/* Enhanced styling for sections */
+.explanation-result > *:first-child {
+    margin-top: 0;
+}
+
+.explanation-result > *:last-child {
+    margin-bottom: 0;
 }
 
 /* Amortization Schedule */
