@@ -8,26 +8,23 @@ A user-friendly financial calculator Progressive Web App (PWA) designed specific
 
 📱 **Install as App**: Look for the "Install" button in your browser or "Add to Home Screen" option to install FinCon as a native app on your device!
 
-## 🔧 Setup for Dynamic AI Explanations
+## 🤖 Smart Explanations
 
-FinCon now supports dynamic, personalized explanations powered by OpenAI's GPT-3.5-turbo. To enable this feature:
+FinCon provides personalized, contextual explanations that adapt to your specific financial situation. The app analyzes your inputs and provides tailored advice based on:
 
-### Method 1: Configuration File (Recommended for developers)
+- **Your age and retirement timeline** - Different strategies for different life stages
+- **Loan amount and terms** - Contextual advice based on your borrowing level  
+- **Malaysian financial context** - Local investment options, banking practices, and regulations
+- **Risk tolerance by timeframe** - Age-appropriate investment allocation suggestions
+
+### For Developers: Enhanced AI Explanations
+Developers can optionally enable OpenAI-powered dynamic explanations:
+
 1. Copy `config.example.js` to `config.js`
 2. Add your OpenAI API key to the `config.js` file
 3. The `config.js` file is automatically ignored by git for security
 
-### Method 2: Browser Input (For end users)
-1. Enter your API key in the input field at the top of the app
-2. The key will be stored securely in your browser's localStorage
-3. Clear the field to disable dynamic explanations
-
-### Getting an OpenAI API Key
-1. Visit [OpenAI Platform](https://platform.openai.com/api-keys)
-2. Create an account and generate an API key
-3. Add billing information (GPT-3.5-turbo costs ~$0.002 per explanation)
-
-**Note**: Without an API key, the app works perfectly with pre-written static explanations.
+**Note**: The app provides excellent personalized explanations without any API keys - this enhancement is purely optional for developers who want to experiment with AI-generated content.
 
 ## 🚀 Features
 

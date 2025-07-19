@@ -40,31 +40,6 @@ body {
     }
 }
 
-/* API Key Configuration styling */
-.api-config {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    padding: 15px;
-    margin-bottom: 20px;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.api-config input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-size: 14px;
-    margin-top: 5px;
-}
-
-.api-config small {
-    color: #fff;
-    opacity: 0.8;
-    display: block;
-    margin-top: 5px;
-}
 
 /* Malaysian flag with fallback for desktop */
 .malaysia-flag {

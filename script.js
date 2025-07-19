@@ -19,7 +19,7 @@ function initializeAPIKey() {
     }
 }
 
-// Function to set OpenAI API key
+// Function to set OpenAI API key (for developers only)
 function setOpenAIKey(key) {
     OPENAI_API_KEY = key.trim();
     if (OPENAI_API_KEY) {
@@ -225,75 +225,61 @@ async function calculateRetirement() {
     document.getElementById('monthlySavings').textContent = formatCurrency(monthlySavingsRequired);
     document.getElementById('futureExpenses').textContent = formatCurrency(futureMonthlyExpenses);
     
-    // Show loading state for explanation
+    // Generate personalized explanation
     const explanationElement = document.getElementById('retirementExplanation');
-    explanationElement.innerHTML = '<div class="loading-explanation">🤖 Generating personalized explanation...</div>';
     
-    // Generate dynamic explanation
-    const calculationData = {
-        currentAge,
-        retirementAge,
-        monthlyExpenses,
-        inflationRate: inflationRate * 100,
-        expectedReturn: expectedReturn * 100,
-        yearsToRetirement,
-        futureMonthlyExpenses,
-        corpusNeeded,
-        monthlySavingsRequired
-    };
+    // Enhanced static explanation that feels dynamic
+    const savingsPercentage = ((monthlySavingsRequired / monthlyExpenses) * 100).toFixed(1);
+    const timeframe = yearsToRetirement;
     
-    try {
-        const dynamicExplanation = await generateDynamicExplanation('retirement', calculationData);
-        
-        if (dynamicExplanation) {
-            explanationElement.innerHTML = dynamicExplanation;
-        } else {
-            // Fallback to static explanation
-            const staticExplanation = `
-                Great news! Here's your retirement roadmap: 🗺️<br><br>
-                
-                <strong>The Math Behind It:</strong><br>
-                • You have ${yearsToRetirement} years to save up<br>
-                • With ${(inflationRate * 100).toFixed(1)}% inflation, your current RM${formatNumber(monthlyExpenses)} monthly expenses will become RM${formatNumber(Math.round(futureMonthlyExpenses))} by retirement<br>
-                • Using the 25x rule (withdraw 4% annually), you'll need ${formatCurrency(corpusNeeded)} as your retirement fund<br><br>
-                
-                <strong>Your Action Plan:</strong><br>
-                • Save RM${formatNumber(Math.round(monthlySavingsRequired))} every month<br>
-                • That's ${((monthlySavingsRequired / monthlyExpenses) * 100).toFixed(1)}% of your current monthly expenses<br>
-                • Invest in a diversified portfolio targeting ${(expectedReturn * 100).toFixed(1)}% annual returns<br><br>
-                
-                <strong>Pro Tips:</strong><br>
-                • Start with EPF contributions - they're giving you free money!<br>
-                • Consider unit trusts, ETFs, or REITS for diversification<br>
-                • Review and adjust your plan every 2-3 years<br>
-                • Don't forget about healthcare costs - they tend to be higher during retirement!
-            `;
-            explanationElement.innerHTML = staticExplanation;
-        }
-    } catch (error) {
-        console.error('Error generating explanation:', error);
-        // Fallback to static explanation on error
-        const staticExplanation = `
-            Great news! Here's your retirement roadmap: 🗺️<br><br>
-            
-            <strong>The Math Behind It:</strong><br>
-            • You have ${yearsToRetirement} years to save up<br>
-            • With ${(inflationRate * 100).toFixed(1)}% inflation, your current RM${formatNumber(monthlyExpenses)} monthly expenses will become RM${formatNumber(Math.round(futureMonthlyExpenses))} by retirement<br>
-            • Using the 25x rule (withdraw 4% annually), you'll need ${formatCurrency(corpusNeeded)} as your retirement fund<br><br>
-            
-            <strong>Your Action Plan:</strong><br>
-            • Save RM${formatNumber(Math.round(monthlySavingsRequired))} every month<br>
-            • That's ${((monthlySavingsRequired / monthlyExpenses) * 100).toFixed(1)}% of your current monthly expenses<br>
-            • Invest in a diversified portfolio targeting ${(expectedReturn * 100).toFixed(1)}% annual returns<br><br>
-            
-            <strong>Pro Tips:</strong><br>
-            • Start with EPF contributions - they're giving you free money!<br>
-            • Consider unit trusts, ETFs, or REITS for diversification<br>
-            • Review and adjust your plan every 2-3 years<br>
-            • Don't forget about healthcare costs - they tend to be higher during retirement!
-        `;
-        explanationElement.innerHTML = staticExplanation;
+    let personalizedMessage = '';
+    if (timeframe > 30) {
+        personalizedMessage = `Wah, you're starting early! That's fantastic - time is your biggest advantage. 💪`;
+    } else if (timeframe > 20) {
+        personalizedMessage = `Good timing! You still have plenty of time to build your retirement fund. 👍`;
+    } else if (timeframe > 10) {
+        personalizedMessage = `Time to get serious about retirement planning! But don't worry, it's still very doable. 🎯`;
+    } else {
+        personalizedMessage = `You're in the final stretch! Every ringgit saved now makes a big difference. 🚀`;
     }
+    
+    let savingsAdvice = '';
+    if (savingsPercentage < 10) {
+        savingsAdvice = `Great news! You only need to save ${savingsPercentage}% of your current expenses - that's very manageable! 😊`;
+    } else if (savingsPercentage < 20) {
+        savingsAdvice = `You'll need to save ${savingsPercentage}% of your current expenses. It's a bit of a stretch but totally achievable with the right plan! 💪`;
+    } else if (savingsPercentage < 30) {
+        savingsAdvice = `Saving ${savingsPercentage}% might seem challenging, but remember - this is for your freedom! Consider increasing your income or adjusting your retirement lifestyle. 🎯`;
+    } else {
+        savingsAdvice = `${savingsPercentage}% is quite ambitious! You might want to consider working a few extra years, reducing retirement expenses, or boosting your income. Every bit helps! 🚀`;
+    }
+    
+    const explanation = `
+        ${personalizedMessage}<br><br>
+        
+        <strong>Your Personal Retirement Picture:</strong><br>
+        • You have ${yearsToRetirement} years to build your freedom fund<br>
+        • With ${(inflationRate * 100).toFixed(1)}% inflation, your RM${formatNumber(monthlyExpenses)} lifestyle today will cost RM${formatNumber(Math.round(futureMonthlyExpenses))} when you retire<br>
+        • Total target: ${formatCurrency(corpusNeeded)} (using the proven 25x rule for sustainable withdrawals)<br><br>
+        
+        <strong>Your Monthly Mission:</strong><br>
+        • Save RM${formatNumber(Math.round(monthlySavingsRequired))} every month<br>
+        • ${savingsAdvice}<br>
+        • Invest wisely to achieve ${(expectedReturn * 100).toFixed(1)}% annual returns<br><br>
+        
+        <strong>Your Malaysian Advantage:</strong><br>
+        • Max out your EPF - it's like free money from your employer!<br>
+        • Consider unit trusts from local fund houses (Public Mutual, CIMB Principal)<br>
+        • Look into REITs for property exposure without the hassle<br>
+        • ASB/ASW for guaranteed returns (if you're eligible)<br><br>
+        
+        <strong>Smart Moves for Your Age Group:</strong><br>
+        ${timeframe > 25 ? '• You have time for higher-risk, higher-reward investments<br>• Consider equity-heavy portfolios (70-80%)<br>• Start an emergency fund alongside retirement savings' : 
+          timeframe > 15 ? '• Balance growth and stability (60-70% equity)<br>• Consider conservative debt funds for stability<br>• Review and rebalance annually' :
+          '• Focus on capital preservation (40-50% equity)<br>• Prioritize stable, dividend-paying investments<br>• Consider gradually shifting to bonds as you approach retirement'}
+    `;
+    
+    explanationElement.innerHTML = explanation;
     
     // Show results with animation
     const resultSection = document.getElementById('retirementResult');
@@ -353,72 +339,61 @@ async function calculateLoan() {
     document.getElementById('totalInterest').textContent = formatCurrency(totalInterest);
     document.getElementById('totalPaid').textContent = formatCurrency(totalAmountPaid);
     
-    // Show loading state for explanation
+    // Generate personalized explanation
     const explanationElement = document.getElementById('loanExplanation');
-    explanationElement.innerHTML = '<div class="loading-explanation">🤖 Generating personalized explanation...</div>';
     
-    // Generate dynamic explanation
-    const calculationData = {
-        loanAmount,
-        interestRate: annualRate * 100,
-        loanTermYears,
-        monthlyPayment,
-        totalInterest,
-        totalAmountPaid
-    };
+    // Enhanced static explanation that feels dynamic
+    const interestPercentage = (totalInterest / loanAmount * 100).toFixed(1);
+    const initialInterestRatio = Math.round((monthlyRate * loanAmount / monthlyPayment) * 100);
     
-    try {
-        const dynamicExplanation = await generateDynamicExplanation('loan', calculationData);
-        
-        if (dynamicExplanation) {
-            explanationElement.innerHTML = dynamicExplanation;
-        } else {
-            // Fallback to static explanation
-            const interestPercentage = (totalInterest / loanAmount * 100).toFixed(1);
-            const staticExplanation = `
-                Here's the real talk about your loan: 💰<br><br>
-                
-                <strong>The Numbers:</strong><br>
-                • Monthly payment: RM${formatNumber(Math.round(monthlyPayment))}<br>
-                • Total interest over ${loanTermYears} years: RM${formatNumber(Math.round(totalInterest))}<br>
-                • That's ${interestPercentage}% extra on top of your original loan!<br><br>
-                
-                <strong>What This Means:</strong><br>
-                • Out of every RM100 you pay monthly, about RM${Math.round((monthlyRate * loanAmount / monthlyPayment) * 100)} goes to interest initially<br>
-                • Good news: As time goes on, more of your payment goes to the actual loan amount<br>
-                • Consider paying extra towards principal to save on interest!<br><br>
-                
-                <strong>Malaysian Context:</strong><br>
-                • Most banks allow early partial payments without penalty<br>
-                • Consider refinancing if rates drop significantly<br>
-                • Don't forget to factor in legal fees, valuation costs, and insurance!
-            `;
-            explanationElement.innerHTML = staticExplanation;
-        }
-    } catch (error) {
-        console.error('Error generating explanation:', error);
-        // Fallback to static explanation on error
-        const interestPercentage = (totalInterest / loanAmount * 100).toFixed(1);
-        const staticExplanation = `
-            Here's the real talk about your loan: 💰<br><br>
-            
-            <strong>The Numbers:</strong><br>
-            • Monthly payment: RM${formatNumber(Math.round(monthlyPayment))}<br>
-            • Total interest over ${loanTermYears} years: RM${formatNumber(Math.round(totalInterest))}<br>
-            • That's ${interestPercentage}% extra on top of your original loan!<br><br>
-            
-            <strong>What This Means:</strong><br>
-            • Out of every RM100 you pay monthly, about RM${Math.round((monthlyRate * loanAmount / monthlyPayment) * 100)} goes to interest initially<br>
-            • Good news: As time goes on, more of your payment goes to the actual loan amount<br>
-            • Consider paying extra towards principal to save on interest!<br><br>
-            
-            <strong>Malaysian Context:</strong><br>
-            • Most banks allow early partial payments without penalty<br>
-            • Consider refinancing if rates drop significantly<br>
-            • Don't forget to factor in legal fees, valuation costs, and insurance!
-        `;
-        explanationElement.innerHTML = staticExplanation;
+    let loanSizeMessage = '';
+    if (loanAmount < 200000) {
+        loanSizeMessage = `This is a reasonable loan size for most Malaysians. Smart borrowing! 👍`;
+    } else if (loanAmount < 500000) {
+        loanSizeMessage = `This is a substantial loan - make sure you're comfortable with the monthly commitment. 🏡`;
+    } else if (loanAmount < 1000000) {
+        loanSizeMessage = `This is a significant financial commitment. Ensure your income can comfortably support this payment. 💼`;
+    } else {
+        loanSizeMessage = `This is a major loan! Consider if you really need this amount or if you can increase your down payment. 🤔`;
     }
+    
+    let interestAdvice = '';
+    if (interestPercentage < 30) {
+        interestAdvice = `The interest cost is quite reasonable at ${interestPercentage}% of your loan amount. 😊`;
+    } else if (interestPercentage < 50) {
+        interestAdvice = `You'll pay ${interestPercentage}% extra in interest - that's typical for Malaysian home loans. 💡`;
+    } else if (interestPercentage < 80) {
+        interestAdvice = `The interest adds up to ${interestPercentage}% extra - consider shortening the loan term if possible. 🎯`;
+    } else {
+        interestAdvice = `Wow! ${interestPercentage}% extra in interest - definitely consider early payments or refinancing options. 🚀`;
+    }
+    
+    const explanation = `
+        ${loanSizeMessage}<br><br>
+        
+        <strong>Breaking Down Your Loan:</strong><br>
+        • Monthly payment: RM${formatNumber(Math.round(monthlyPayment))}<br>
+        • Over ${loanTermYears} years, you'll pay RM${formatNumber(Math.round(totalInterest))} in interest<br>
+        • ${interestAdvice}<br><br>
+        
+        <strong>How Your Payments Work:</strong><br>
+        • Initially, RM${initialInterestRatio} out of every RM100 goes to interest<br>
+        • As you pay down the principal, more money goes toward reducing your debt<br>
+        • In the later years, most of your payment reduces the actual loan amount<br><br>
+        
+        <strong>Malaysian Banking Tips:</strong><br>
+        • Most banks allow you to pay extra toward principal without penalties<br>
+        • Even RM100 extra per month can save you thousands in interest!<br>
+        • Lock-in periods typically last 2-5 years, then you can refinance<br>
+        • Consider flexi home loans if you have irregular income<br><br>
+        
+        <strong>Smart Strategies:</strong><br>
+        ${loanTermYears > 25 ? '• Your loan term is quite long - consider paying extra monthly to reduce interest<br>• Every extra RM200/month can cut years off your loan<br>• Use windfalls (bonus, tax refund) to make lump sum payments' :
+          loanTermYears > 15 ? '• Good loan term length - balances affordability with total interest<br>• Consider annual lump sum payments during bonus season<br>• Review refinancing options every 3-5 years' :
+          '• Shorter loan term means higher monthly payments but much less total interest<br>• You\'re saving a lot on interest with this approach!<br>• Make sure your monthly budget can handle the payments comfortably'}
+    `;
+    
+    explanationElement.innerHTML = explanation;
     
     // Generate amortization schedule for first 12 months
     generateAmortizationSchedule(loanAmount, monthlyRate, monthlyPayment, totalPayments);
@@ -539,20 +514,8 @@ if ('serviceWorker' in navigator) {
 
 // Add some interactive features
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize API key from config or localStorage
+    // Initialize API key from config (developers only)
     initializeAPIKey();
-    
-    // Update UI to show if key is already configured
-    if (OPENAI_API_KEY) {
-        const apiKeyInput = document.getElementById('apiKey');
-        if (window.FINCON_CONFIG && window.FINCON_CONFIG.OPENAI_API_KEY && window.FINCON_CONFIG.OPENAI_API_KEY !== 'your-openai-api-key-here') {
-            apiKeyInput.value = '✅ API key configured in config.js';
-            apiKeyInput.disabled = true;
-            apiKeyInput.type = 'text';
-        } else {
-            apiKeyInput.value = OPENAI_API_KEY;
-        }
-    }
     // Add input validation and real-time feedback
     const inputs = document.querySelectorAll('input[type="number"]');
     
