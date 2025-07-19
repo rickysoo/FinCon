@@ -48,18 +48,18 @@ async function generateDynamicExplanation(calculationType, data) {
                 'Authorization': `Bearer ${OPENAI_API_KEY}`
             },
             body: JSON.stringify({
-                model: 'gpt-3.5-turbo',
+                model: window.FINCON_CONFIG?.OPENAI_MODEL || 'gpt-4o-mini',
                 messages: [
                     {
                         role: 'system',
-                        content: 'You are a friendly Malaysian financial advisor who explains complex financial concepts in simple, relatable terms. Use Malaysian context, local terms, and a warm, encouraging tone. Keep explanations practical and actionable.'
+                        content: 'You are a friendly Malaysian financial advisor who explains complex financial concepts in simple, relatable terms. Use Malaysian context, local terms like "boleh", "lepak", "wah", and a warm, encouraging tone. Keep explanations practical and actionable. Format your response with HTML tags for better readability.'
                     },
                     {
                         role: 'user',
                         content: prompt
                     }
                 ],
-                max_tokens: 500,
+                max_tokens: 600,
                 temperature: 0.7
             })
         });
@@ -79,40 +79,48 @@ async function generateDynamicExplanation(calculationType, data) {
 // Create prompts for different calculation types
 function createPromptForCalculation(type, data) {
     if (type === 'retirement') {
-        return `Explain this retirement calculation in a friendly, Malaysian context:
-        - Current age: ${data.currentAge}
-        - Retirement age: ${data.retirementAge}
-        - Current monthly expenses: RM${data.monthlyExpenses}
-        - Inflation rate: ${data.inflationRate}%
-        - Expected return: ${data.expectedReturn}%
-        - Years to retirement: ${data.yearsToRetirement}
-        - Future monthly expenses: RM${Math.round(data.futureMonthlyExpenses)}
-        - Total corpus needed: RM${Math.round(data.corpusNeeded)}
-        - Monthly savings required: RM${Math.round(data.monthlySavingsRequired)}
-        
-        Please provide a warm, encouraging explanation that includes:
-        1. What these numbers mean in practical terms
-        2. Actionable advice for a Malaysian investor
-        3. Local investment options (EPF, unit trusts, etc.)
-        4. Tips to make saving more achievable
-        
-        Use HTML formatting and keep it conversational with Malaysian terms like "lepak", "boleh", etc.`;
+        const savingsPercentage = ((data.monthlySavingsRequired / data.monthlyExpenses) * 100).toFixed(1);
+        return `As a friendly Malaysian financial advisor, provide personalized retirement advice based on this calculation:
+
+**Personal Details:**
+- Age ${data.currentAge}, retiring at ${data.retirementAge} (${data.yearsToRetirement} years to go)
+- Current monthly expenses: RM${data.monthlyExpenses.toLocaleString()}
+- Expected inflation: ${data.inflationRate}% annually
+- Target investment returns: ${data.expectedReturn}% annually
+
+**Calculated Results:**
+- Future monthly expenses (at retirement): RM${Math.round(data.futureMonthlyExpenses).toLocaleString()}
+- Total retirement corpus needed: RM${Math.round(data.corpusNeeded).toLocaleString()}
+- Monthly savings required: RM${Math.round(data.monthlySavingsRequired).toLocaleString()} (${savingsPercentage}% of current expenses)
+
+**Please provide:**
+1. A warm, encouraging opening that addresses their specific timeline and savings challenge
+2. Practical Malaysian investment strategies (EPF, ASB, unit trusts, REITs)
+3. Age-appropriate portfolio allocation advice
+4. Specific tips to make the ${savingsPercentage}% savings rate achievable
+5. Realistic next steps they can take immediately
+
+Use Malaysian terms naturally (wah, boleh, lepak) and HTML formatting. Keep it encouraging and actionable!`;
     } else if (type === 'loan') {
-        return `Explain this loan calculation in a friendly, Malaysian context:
-        - Loan amount: RM${data.loanAmount}
-        - Interest rate: ${data.interestRate}%
-        - Loan term: ${data.loanTermYears} years
-        - Monthly payment: RM${Math.round(data.monthlyPayment)}
-        - Total interest: RM${Math.round(data.totalInterest)}
-        - Total amount paid: RM${Math.round(data.totalAmountPaid)}
-        
-        Please provide a clear explanation that includes:
-        1. What the monthly payment means for their budget
-        2. How the interest compounds over time
-        3. Malaysian-specific advice (early payment options, refinancing, etc.)
-        4. Tips to reduce total interest paid
-        
-        Use HTML formatting and keep it practical with Malaysian banking context.`;
+        const interestPercentage = (data.totalInterest / data.loanAmount * 100).toFixed(1);
+        return `As a friendly Malaysian financial advisor, analyze this loan and provide practical advice:
+
+**Loan Details:**
+- Loan amount: RM${data.loanAmount.toLocaleString()}
+- Interest rate: ${data.interestRate}% per year
+- Loan term: ${data.loanTermYears} years
+- Monthly payment: RM${Math.round(data.monthlyPayment).toLocaleString()}
+- Total interest cost: RM${Math.round(data.totalInterest).toLocaleString()} (${interestPercentage}% of loan amount)
+- Total amount to be paid: RM${Math.round(data.totalAmountPaid).toLocaleString()}
+
+**Please provide:**
+1. An honest assessment of whether this loan is reasonable for Malaysian standards
+2. Explanation of how the interest breakdown works over time
+3. Specific Malaysian banking tips (early payment, refinancing, flexi loans)
+4. Practical strategies to reduce total interest paid
+5. Budget planning advice for managing this monthly commitment
+
+Use Malaysian context and terms naturally, HTML formatting, and focus on actionable advice they can implement immediately!`;
     }
 }
 
@@ -225,61 +233,54 @@ async function calculateRetirement() {
     document.getElementById('monthlySavings').textContent = formatCurrency(monthlySavingsRequired);
     document.getElementById('futureExpenses').textContent = formatCurrency(futureMonthlyExpenses);
     
-    // Generate personalized explanation
+    // Show loading state for explanation
     const explanationElement = document.getElementById('retirementExplanation');
+    explanationElement.innerHTML = '<div class="loading-explanation">🤖 Generating your personalized retirement roadmap...</div>';
     
-    // Enhanced static explanation that feels dynamic
-    const savingsPercentage = ((monthlySavingsRequired / monthlyExpenses) * 100).toFixed(1);
-    const timeframe = yearsToRetirement;
+    // Generate dynamic explanation using LLM
+    const calculationData = {
+        currentAge,
+        retirementAge,
+        monthlyExpenses,
+        inflationRate: inflationRate * 100,
+        expectedReturn: expectedReturn * 100,
+        yearsToRetirement,
+        futureMonthlyExpenses,
+        corpusNeeded,
+        monthlySavingsRequired
+    };
     
-    let personalizedMessage = '';
-    if (timeframe > 30) {
-        personalizedMessage = `Wah, you're starting early! That's fantastic - time is your biggest advantage. 💪`;
-    } else if (timeframe > 20) {
-        personalizedMessage = `Good timing! You still have plenty of time to build your retirement fund. 👍`;
-    } else if (timeframe > 10) {
-        personalizedMessage = `Time to get serious about retirement planning! But don't worry, it's still very doable. 🎯`;
-    } else {
-        personalizedMessage = `You're in the final stretch! Every ringgit saved now makes a big difference. 🚀`;
+    try {
+        const dynamicExplanation = await generateDynamicExplanation('retirement', calculationData);
+        
+        if (dynamicExplanation) {
+            explanationElement.innerHTML = dynamicExplanation;
+        } else {
+            // Fallback to enhanced static explanation
+            const savingsPercentage = ((monthlySavingsRequired / monthlyExpenses) * 100).toFixed(1);
+            const staticExplanation = `
+                <strong>Your Retirement Roadmap:</strong><br><br>
+                
+                • You have ${yearsToRetirement} years to build your freedom fund<br>
+                • With ${(inflationRate * 100).toFixed(1)}% inflation, your RM${formatNumber(monthlyExpenses)} lifestyle will cost RM${formatNumber(Math.round(futureMonthlyExpenses))} when you retire<br>
+                • Target corpus: ${formatCurrency(corpusNeeded)} using the 25x rule<br>
+                • Monthly savings needed: RM${formatNumber(Math.round(monthlySavingsRequired))} (${savingsPercentage}% of current expenses)<br><br>
+                
+                <strong>Malaysian Investment Options:</strong><br>
+                • Max out EPF contributions - employer matching is free money!<br>
+                • Consider unit trusts (Public Mutual, CIMB Principal)<br>
+                • ASB/ASW for guaranteed returns (if eligible)<br>
+                • REITs for property exposure without the hassle
+            `;
+            explanationElement.innerHTML = staticExplanation;
+        }
+    } catch (error) {
+        console.error('Error generating explanation:', error);
+        // Fallback to basic explanation
+        explanationElement.innerHTML = `
+            <strong>Your Plan:</strong> Save RM${formatNumber(Math.round(monthlySavingsRequired))} monthly for ${yearsToRetirement} years to reach your ${formatCurrency(corpusNeeded)} retirement goal.
+        `;
     }
-    
-    let savingsAdvice = '';
-    if (savingsPercentage < 10) {
-        savingsAdvice = `Great news! You only need to save ${savingsPercentage}% of your current expenses - that's very manageable! 😊`;
-    } else if (savingsPercentage < 20) {
-        savingsAdvice = `You'll need to save ${savingsPercentage}% of your current expenses. It's a bit of a stretch but totally achievable with the right plan! 💪`;
-    } else if (savingsPercentage < 30) {
-        savingsAdvice = `Saving ${savingsPercentage}% might seem challenging, but remember - this is for your freedom! Consider increasing your income or adjusting your retirement lifestyle. 🎯`;
-    } else {
-        savingsAdvice = `${savingsPercentage}% is quite ambitious! You might want to consider working a few extra years, reducing retirement expenses, or boosting your income. Every bit helps! 🚀`;
-    }
-    
-    const explanation = `
-        ${personalizedMessage}<br><br>
-        
-        <strong>Your Personal Retirement Picture:</strong><br>
-        • You have ${yearsToRetirement} years to build your freedom fund<br>
-        • With ${(inflationRate * 100).toFixed(1)}% inflation, your RM${formatNumber(monthlyExpenses)} lifestyle today will cost RM${formatNumber(Math.round(futureMonthlyExpenses))} when you retire<br>
-        • Total target: ${formatCurrency(corpusNeeded)} (using the proven 25x rule for sustainable withdrawals)<br><br>
-        
-        <strong>Your Monthly Mission:</strong><br>
-        • Save RM${formatNumber(Math.round(monthlySavingsRequired))} every month<br>
-        • ${savingsAdvice}<br>
-        • Invest wisely to achieve ${(expectedReturn * 100).toFixed(1)}% annual returns<br><br>
-        
-        <strong>Your Malaysian Advantage:</strong><br>
-        • Max out your EPF - it's like free money from your employer!<br>
-        • Consider unit trusts from local fund houses (Public Mutual, CIMB Principal)<br>
-        • Look into REITs for property exposure without the hassle<br>
-        • ASB/ASW for guaranteed returns (if you're eligible)<br><br>
-        
-        <strong>Smart Moves for Your Age Group:</strong><br>
-        ${timeframe > 25 ? '• You have time for higher-risk, higher-reward investments<br>• Consider equity-heavy portfolios (70-80%)<br>• Start an emergency fund alongside retirement savings' : 
-          timeframe > 15 ? '• Balance growth and stability (60-70% equity)<br>• Consider conservative debt funds for stability<br>• Review and rebalance annually' :
-          '• Focus on capital preservation (40-50% equity)<br>• Prioritize stable, dividend-paying investments<br>• Consider gradually shifting to bonds as you approach retirement'}
-    `;
-    
-    explanationElement.innerHTML = explanation;
     
     // Show results with animation
     const resultSection = document.getElementById('retirementResult');
@@ -339,61 +340,50 @@ async function calculateLoan() {
     document.getElementById('totalInterest').textContent = formatCurrency(totalInterest);
     document.getElementById('totalPaid').textContent = formatCurrency(totalAmountPaid);
     
-    // Generate personalized explanation
+    // Show loading state for explanation
     const explanationElement = document.getElementById('loanExplanation');
+    explanationElement.innerHTML = '<div class="loading-explanation">🤖 Analyzing your loan and generating personalized advice...</div>';
     
-    // Enhanced static explanation that feels dynamic
-    const interestPercentage = (totalInterest / loanAmount * 100).toFixed(1);
-    const initialInterestRatio = Math.round((monthlyRate * loanAmount / monthlyPayment) * 100);
+    // Generate dynamic explanation using LLM
+    const calculationData = {
+        loanAmount,
+        interestRate: annualRate * 100,
+        loanTermYears,
+        monthlyPayment,
+        totalInterest,
+        totalAmountPaid
+    };
     
-    let loanSizeMessage = '';
-    if (loanAmount < 200000) {
-        loanSizeMessage = `This is a reasonable loan size for most Malaysians. Smart borrowing! 👍`;
-    } else if (loanAmount < 500000) {
-        loanSizeMessage = `This is a substantial loan - make sure you're comfortable with the monthly commitment. 🏡`;
-    } else if (loanAmount < 1000000) {
-        loanSizeMessage = `This is a significant financial commitment. Ensure your income can comfortably support this payment. 💼`;
-    } else {
-        loanSizeMessage = `This is a major loan! Consider if you really need this amount or if you can increase your down payment. 🤔`;
+    try {
+        const dynamicExplanation = await generateDynamicExplanation('loan', calculationData);
+        
+        if (dynamicExplanation) {
+            explanationElement.innerHTML = dynamicExplanation;
+        } else {
+            // Fallback to enhanced static explanation
+            const interestPercentage = (totalInterest / loanAmount * 100).toFixed(1);
+            const staticExplanation = `
+                <strong>Your Loan Breakdown:</strong><br><br>
+                
+                • Monthly payment: RM${formatNumber(Math.round(monthlyPayment))}<br>
+                • Total interest over ${loanTermYears} years: RM${formatNumber(Math.round(totalInterest))}<br>
+                • Interest adds ${interestPercentage}% to your loan cost<br><br>
+                
+                <strong>Malaysian Banking Tips:</strong><br>
+                • Most banks allow extra principal payments without penalty<br>
+                • Even RM100 extra monthly can save thousands in interest<br>
+                • Consider refinancing after lock-in period (2-5 years)<br>
+                • Flexi loans offer payment flexibility for irregular income
+            `;
+            explanationElement.innerHTML = staticExplanation;
+        }
+    } catch (error) {
+        console.error('Error generating explanation:', error);
+        // Fallback to basic explanation
+        explanationElement.innerHTML = `
+            <strong>Your Loan:</strong> RM${formatNumber(Math.round(monthlyPayment))} monthly for ${loanTermYears} years. Total interest: RM${formatNumber(Math.round(totalInterest))}.
+        `;
     }
-    
-    let interestAdvice = '';
-    if (interestPercentage < 30) {
-        interestAdvice = `The interest cost is quite reasonable at ${interestPercentage}% of your loan amount. 😊`;
-    } else if (interestPercentage < 50) {
-        interestAdvice = `You'll pay ${interestPercentage}% extra in interest - that's typical for Malaysian home loans. 💡`;
-    } else if (interestPercentage < 80) {
-        interestAdvice = `The interest adds up to ${interestPercentage}% extra - consider shortening the loan term if possible. 🎯`;
-    } else {
-        interestAdvice = `Wow! ${interestPercentage}% extra in interest - definitely consider early payments or refinancing options. 🚀`;
-    }
-    
-    const explanation = `
-        ${loanSizeMessage}<br><br>
-        
-        <strong>Breaking Down Your Loan:</strong><br>
-        • Monthly payment: RM${formatNumber(Math.round(monthlyPayment))}<br>
-        • Over ${loanTermYears} years, you'll pay RM${formatNumber(Math.round(totalInterest))} in interest<br>
-        • ${interestAdvice}<br><br>
-        
-        <strong>How Your Payments Work:</strong><br>
-        • Initially, RM${initialInterestRatio} out of every RM100 goes to interest<br>
-        • As you pay down the principal, more money goes toward reducing your debt<br>
-        • In the later years, most of your payment reduces the actual loan amount<br><br>
-        
-        <strong>Malaysian Banking Tips:</strong><br>
-        • Most banks allow you to pay extra toward principal without penalties<br>
-        • Even RM100 extra per month can save you thousands in interest!<br>
-        • Lock-in periods typically last 2-5 years, then you can refinance<br>
-        • Consider flexi home loans if you have irregular income<br><br>
-        
-        <strong>Smart Strategies:</strong><br>
-        ${loanTermYears > 25 ? '• Your loan term is quite long - consider paying extra monthly to reduce interest<br>• Every extra RM200/month can cut years off your loan<br>• Use windfalls (bonus, tax refund) to make lump sum payments' :
-          loanTermYears > 15 ? '• Good loan term length - balances affordability with total interest<br>• Consider annual lump sum payments during bonus season<br>• Review refinancing options every 3-5 years' :
-          '• Shorter loan term means higher monthly payments but much less total interest<br>• You\'re saving a lot on interest with this approach!<br>• Make sure your monthly budget can handle the payments comfortably'}
-    `;
-    
-    explanationElement.innerHTML = explanation;
     
     // Generate amortization schedule for first 12 months
     generateAmortizationSchedule(loanAmount, monthlyRate, monthlyPayment, totalPayments);
