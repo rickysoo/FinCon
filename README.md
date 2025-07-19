@@ -26,6 +26,51 @@ Developers can optionally enable OpenAI-powered dynamic explanations:
 
 **Note**: The app provides excellent personalized explanations without any API keys - this enhancement is purely optional for developers who want to experiment with AI-generated content.
 
+## 🚀 Secure Deployment with Dynamic Explanations
+
+To deploy FinCon with secure dynamic explanations (without exposing API keys):
+
+### Option 1: Deploy to Vercel (Recommended)
+
+1. **Fork/Clone Repository**
+   ```bash
+   git clone https://github.com/yourusername/FinCon.git
+   ```
+
+2. **Connect to Vercel**
+   - Go to [vercel.com](https://vercel.com) and sign up
+   - Click "New Project" and import your GitHub repository
+   - Vercel will auto-detect it as a static site with serverless functions
+
+3. **Configure Environment Variable**
+   - In Vercel dashboard, go to Project Settings → Environment Variables
+   - Add variable: `OPENAI_API_KEY` with your OpenAI API key value
+   - This keeps your API key secure on the server side
+
+4. **Deploy**
+   - Vercel automatically deploys on every git push
+   - Your app will have dynamic AI explanations at your custom Vercel URL
+
+### Option 2: Deploy to Netlify
+
+1. **Deploy Site**
+   - Connect your GitHub repo to Netlify
+   - Set build command to `npm run build` (if using build process)
+
+2. **Add Netlify Function**
+   - Move `api/explain.js` to `netlify/functions/explain.js`
+   - Update frontend API calls to `/netlify/functions/explain`
+
+3. **Environment Variables**
+   - In Netlify dashboard, add `OPENAI_API_KEY` environment variable
+
+### How It Works
+
+- **Frontend**: Makes API calls to `/api/explain` endpoint
+- **Backend**: Vercel serverless function securely calls OpenAI API
+- **Fallback**: If backend unavailable, falls back to client-side API (if configured) or static explanations
+- **Security**: API key stored as environment variable, never exposed in code
+
 ## 🚀 Features
 
 ### 🏝️ Retirement Dreams Calculator

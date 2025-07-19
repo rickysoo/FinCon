@@ -31,10 +31,38 @@ function setOpenAIKey(key) {
     }
 }
 
-// OpenAI API integration for dynamic explanations
+// Backend API integration for dynamic explanations
 async function generateDynamicExplanation(calculationType, data) {
+    try {
+        // Try backend API first
+        const response = await fetch('/api/explain', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                calculationType,
+                data
+            })
+        });
+
+        if (!response.ok) {
+            console.warn('Backend API unavailable, falling back to client-side API');
+            return await generateClientSideExplanation(calculationType, data);
+        }
+
+        const result = await response.json();
+        return result.explanation;
+    } catch (error) {
+        console.warn('Backend API error, falling back to client-side API:', error);
+        return await generateClientSideExplanation(calculationType, data);
+    }
+}
+
+// Fallback to client-side API if backend is unavailable
+async function generateClientSideExplanation(calculationType, data) {
     if (!OPENAI_API_KEY) {
-        console.warn('OpenAI API key not set. Using static explanations.');
+        console.warn('No API key available. Using static explanations.');
         return null;
     }
 
@@ -71,7 +99,7 @@ async function generateDynamicExplanation(calculationType, data) {
         const result = await response.json();
         return result.choices[0].message.content;
     } catch (error) {
-        console.error('Error generating dynamic explanation:', error);
+        console.error('Error generating client-side explanation:', error);
         return null;
     }
 }
