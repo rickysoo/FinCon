@@ -52,7 +52,7 @@ async function generateDynamicExplanation(calculationType, data) {
                 messages: [
                     {
                         role: 'system',
-                        content: 'You are a friendly Malaysian financial advisor who explains complex financial concepts in simple, relatable terms. Use Malaysian context, local terms like "boleh", "lepak", "wah", and a warm, encouraging tone. Keep explanations practical and actionable. Format your response with HTML tags for better readability.'
+                        content: 'You are a friendly Malaysian financial advisor who explains complex financial concepts in simple, relatable terms using ENGLISH ONLY. Include Malaysian financial context and local investment options, but write everything in English. Use some Malaysian slang terms like "boleh", "lepak", "wah" sparingly for flavor, but the main explanation must be in English. Keep explanations practical and actionable. Format your response with HTML tags for better readability.'
                     },
                     {
                         role: 'user',
@@ -100,7 +100,7 @@ function createPromptForCalculation(type, data) {
 4. Specific tips to make the ${savingsPercentage}% savings rate achievable
 5. Realistic next steps they can take immediately
 
-Use Malaysian terms naturally (wah, boleh, lepak) and HTML formatting. Keep it encouraging and actionable!`;
+Write entirely in English with Malaysian financial context. Use HTML formatting and keep it encouraging and actionable!`;
     } else if (type === 'loan') {
         const interestPercentage = (data.totalInterest / data.loanAmount * 100).toFixed(1);
         return `As a friendly Malaysian financial advisor, analyze this loan and provide practical advice:
@@ -120,7 +120,7 @@ Use Malaysian terms naturally (wah, boleh, lepak) and HTML formatting. Keep it e
 4. Practical strategies to reduce total interest paid
 5. Budget planning advice for managing this monthly commitment
 
-Use Malaysian context and terms naturally, HTML formatting, and focus on actionable advice they can implement immediately!`;
+Write entirely in English with Malaysian financial context. Use HTML formatting and focus on actionable advice they can implement immediately!`;
     }
 }
 
