@@ -52,7 +52,7 @@ async function generateDynamicExplanation(calculationType, data) {
                 messages: [
                     {
                         role: 'system',
-                        content: 'You are a friendly Malaysian financial advisor. Write ONLY in English using simple HTML tags (h3, strong, ul, li, p, br). Keep explanations SHORT, practical and encouraging. Use Malaysian financial context. Do NOT include ```html code blocks. Always end with a disclaimer about consulting a financial planner. Use occasional Malaysian slang like "boleh" or "wah" for local flavor.'
+                        content: 'You are a friendly Malaysian financial advisor. Write ONLY in proper English using simple HTML tags (h3, strong, ul, li, p, br). Keep explanations SHORT, practical and encouraging. Use Malaysian financial context and investment options. Do NOT include ```html code blocks or local slang words. Always end with a disclaimer about consulting a financial planner. Use professional, clear English throughout.'
                     },
                     {
                         role: 'user',
@@ -92,7 +92,7 @@ Format with HTML tags. Include:
 - One actionable next step
 - Financial planner consultation disclaimer
 
-Keep it under 250 words, encouraging tone, and use "boleh" or "wah" naturally.`;
+Keep it under 250 words with an encouraging, professional tone in proper English.`;
     } else if (type === 'loan') {
         const interestPercentage = (data.totalInterest / data.loanAmount * 100).toFixed(1);
         return `Provide a SHORT loan analysis for a Malaysian borrower.
@@ -108,7 +108,7 @@ Format with HTML tags. Include:
 - One budget management tip
 - Financial planner consultation disclaimer
 
-Keep it under 250 words, practical tone, and use "boleh" naturally.`;
+Keep it under 250 words with a practical, professional tone in proper English.`;
     }
 }
 
@@ -157,25 +157,49 @@ function formatNumber(num) {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
+// Button state management for loading states
+function setCalculateButtonLoading(buttonSelector, isLoading, originalText, loadingText) {
+    const button = document.querySelector(buttonSelector);
+    if (!button) return;
+    
+    if (isLoading) {
+        button.disabled = true;
+        button.style.opacity = '0.7';
+        button.style.cursor = 'not-allowed';
+        button.innerHTML = loadingText;
+    } else {
+        button.disabled = false;
+        button.style.opacity = '1';
+        button.style.cursor = 'pointer';
+        button.innerHTML = originalText;
+    }
+}
+
 // Retirement Calculator
 async function calculateRetirement() {
-    // Get input values
-    const currentAge = parseInt(document.getElementById('currentAge').value);
-    const retirementAge = parseInt(document.getElementById('retirementAge').value);
-    const monthlyExpenses = parseFloat(document.getElementById('monthlyExpenses').value);
-    const inflationRate = parseFloat(document.getElementById('inflationRate').value) / 100;
-    const expectedReturn = parseFloat(document.getElementById('expectedReturn').value) / 100;
+    // Set button to loading state
+    setCalculateButtonLoading('.tab-content.active .calculate-btn', true, 'Calculate My Freedom Fund! 🚀', 'Calculating... Please wait ⏳');
     
-    // Validate inputs
-    if (!currentAge || !retirementAge || !monthlyExpenses || inflationRate < 0 || expectedReturn < 0) {
-        alert('Please fill in all fields with valid numbers! 😊');
-        return;
-    }
-    
-    if (currentAge >= retirementAge) {
-        alert('Your retirement age should be higher than your current age! 😉');
-        return;
-    }
+    try {
+        // Get input values
+        const currentAge = parseInt(document.getElementById('currentAge').value);
+        const retirementAge = parseInt(document.getElementById('retirementAge').value);
+        const monthlyExpenses = parseFloat(document.getElementById('monthlyExpenses').value);
+        const inflationRate = parseFloat(document.getElementById('inflationRate').value) / 100;
+        const expectedReturn = parseFloat(document.getElementById('expectedReturn').value) / 100;
+        
+        // Validate inputs
+        if (!currentAge || !retirementAge || !monthlyExpenses || inflationRate < 0 || expectedReturn < 0) {
+            alert('Please fill in all fields with valid numbers!');
+            setCalculateButtonLoading('.tab-content.active .calculate-btn', false, 'Calculate My Freedom Fund! 🚀', '');
+            return;
+        }
+        
+        if (currentAge >= retirementAge) {
+            alert('Your retirement age should be higher than your current age!');
+            setCalculateButtonLoading('.tab-content.active .calculate-btn', false, 'Calculate My Freedom Fund! 🚀', '');
+            return;
+        }
     
     // Track calculation event
     if (typeof gtag !== 'undefined') {
@@ -270,27 +294,40 @@ async function calculateRetirement() {
         `;
     }
     
-    // Show results with animation
-    const resultSection = document.getElementById('retirementResult');
-    resultSection.style.display = 'block';
-    resultSection.classList.add('success-animation');
-    
-    // Scroll to results
-    resultSection.scrollIntoView({ behavior: 'smooth' });
+        // Show results with animation
+        const resultSection = document.getElementById('retirementResult');
+        resultSection.style.display = 'block';
+        resultSection.classList.add('success-animation');
+        
+        // Scroll to results
+        resultSection.scrollIntoView({ behavior: 'smooth' });
+        
+    } catch (error) {
+        console.error('Error in retirement calculation:', error);
+        alert('An error occurred during calculation. Please try again.');
+    } finally {
+        // Reset button state
+        setCalculateButtonLoading('.tab-content.active .calculate-btn', false, 'Calculate My Freedom Fund! 🚀', '');
+    }
 }
 
 // Loan Calculator
 async function calculateLoan() {
-    // Get input values
-    const loanAmount = parseFloat(document.getElementById('loanAmount').value);
-    const annualRate = parseFloat(document.getElementById('interestRate').value) / 100;
-    const loanTermYears = parseInt(document.getElementById('loanTerm').value);
+    // Set button to loading state
+    setCalculateButtonLoading('.tab-content.active .calculate-btn', true, 'Show Me My Payment Plan! 🏡', 'Calculating... Please wait ⏳');
     
-    // Validate inputs
-    if (!loanAmount || !annualRate || !loanTermYears || loanAmount <= 0 || annualRate < 0 || loanTermYears <= 0) {
-        alert('Please fill in all fields with valid numbers! 😊');
-        return;
-    }
+    try {
+        // Get input values
+        const loanAmount = parseFloat(document.getElementById('loanAmount').value);
+        const annualRate = parseFloat(document.getElementById('interestRate').value) / 100;
+        const loanTermYears = parseInt(document.getElementById('loanTerm').value);
+        
+        // Validate inputs
+        if (!loanAmount || !annualRate || !loanTermYears || loanAmount <= 0 || annualRate < 0 || loanTermYears <= 0) {
+            alert('Please fill in all fields with valid numbers!');
+            setCalculateButtonLoading('.tab-content.active .calculate-btn', false, 'Show Me My Payment Plan! 🏡', '');
+            return;
+        }
     
     // Track calculation event
     if (typeof gtag !== 'undefined') {
@@ -373,16 +410,24 @@ async function calculateLoan() {
         `;
     }
     
-    // Generate amortization schedule for first 12 months
-    generateAmortizationSchedule(loanAmount, monthlyRate, monthlyPayment, totalPayments);
-    
-    // Show results with animation
-    const resultSection = document.getElementById('loanResult');
-    resultSection.style.display = 'block';
-    resultSection.classList.add('success-animation');
-    
-    // Scroll to results
-    resultSection.scrollIntoView({ behavior: 'smooth' });
+        // Generate amortization schedule for first 12 months
+        generateAmortizationSchedule(loanAmount, monthlyRate, monthlyPayment, totalPayments);
+        
+        // Show results with animation
+        const resultSection = document.getElementById('loanResult');
+        resultSection.style.display = 'block';
+        resultSection.classList.add('success-animation');
+        
+        // Scroll to results
+        resultSection.scrollIntoView({ behavior: 'smooth' });
+        
+    } catch (error) {
+        console.error('Error in loan calculation:', error);
+        alert('An error occurred during calculation. Please try again.');
+    } finally {
+        // Reset button state
+        setCalculateButtonLoading('.tab-content.active .calculate-btn', false, 'Show Me My Payment Plan! 🏡', '');
+    }
 }
 
 // Generate Amortization Schedule
