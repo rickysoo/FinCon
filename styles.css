@@ -40,6 +40,133 @@ body {
     }
 }
 
+/* EPF RIA Framework Styles */
+.ria-tiers-overview {
+    margin: 20px 0;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+}
+
+.tier-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.tier-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-left: 4px solid;
+}
+
+.tier-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.tier-card.basic {
+    border-left-color: #e67e22;
+}
+
+.tier-card.adequate {
+    border-left-color: #3498db;
+}
+
+.tier-card.enhanced {
+    border-left-color: #f39c12;
+}
+
+.tier-card h4 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+.tier-amount {
+    font-size: 1.5em;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 10px 0;
+}
+
+.tier-description {
+    color: #7f8c8d;
+    font-size: 0.9em;
+    line-height: 1.4;
+}
+
+.ria-tier-progress {
+    margin: 20px 0;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+}
+
+.tier-progress-bar {
+    margin: 15px 0;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    position: relative;
+}
+
+.tier-progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.tier-progress-name {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.tier-progress-amount {
+    font-weight: 700;
+    color: #27ae60;
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: 8px;
+    background: #ecf0f1;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3498db, #2ecc71);
+    border-radius: 4px;
+    transition: width 1s ease-in-out;
+}
+
+.tier-status {
+    margin-top: 8px;
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
+.tier-status.achieved {
+    color: #27ae60;
+}
+
+.tier-status.in-progress {
+    color: #f39c12;
+}
+
+.tier-status.not-started {
+    color: #e74c3c;
+}
+
 
 /* Malaysian flag with fallback for desktop */
 .malaysia-flag {

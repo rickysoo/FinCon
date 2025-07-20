@@ -45,6 +45,9 @@
             <button class="tab-btn active" onclick="showTab('retirement')">
                 🏝️ Retirement Dreams
             </button>
+            <button class="tab-btn" onclick="showTab('epf-ria')">
+                📊 EPF RIA Framework
+            </button>
             <button class="tab-btn" onclick="showTab('loan')">
                 🏠 Loan Calculator
             </button>
@@ -111,6 +114,101 @@
                     <div class="explanation-result">
                         <h4>What This Means 🎯</h4>
                         <p id="retirementExplanation"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- EPF RIA Framework Tab -->
+        <div id="epf-ria" class="tab-content">
+            <div class="calculator-section">
+                <h2>📊 EPF Retirement Income Adequacy (RIA) Framework</h2>
+                <div class="explanation-box">
+                    <h3>What's the EPF RIA Framework? 🤔</h3>
+                    <p>The EPF RIA Framework is Malaysia's new retirement savings benchmark launched in 2024. It provides three tiers of retirement readiness to help you understand exactly how much you need to save for a comfortable retirement in Malaysia.</p>
+                    <p>This framework replaces the old RM240,000 benchmark with a more comprehensive three-tier system based on real Malaysian living costs! 🇲🇾</p>
+                </div>
+
+                <div class="ria-tiers-overview">
+                    <h3>RIA Framework Tiers 🎯</h3>
+                    <div class="tier-cards">
+                        <div class="tier-card basic">
+                            <h4>🥉 Basic Savings</h4>
+                            <p class="tier-amount">RM390,000</p>
+                            <p class="tier-description">Essential retirement needs</p>
+                        </div>
+                        <div class="tier-card adequate">
+                            <h4>🥈 Adequate Savings</h4>
+                            <p class="tier-amount">RM650,000</p>
+                            <p class="tier-description">Reasonable living standard</p>
+                        </div>
+                        <div class="tier-card enhanced">
+                            <h4>🥇 Enhanced Savings</h4>
+                            <p class="tier-amount">RM1.3 Million</p>
+                            <p class="tier-description">Financial independence & higher quality life</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="riaCurrentAge">Your Current Age:</label>
+                    <input type="number" id="riaCurrentAge" placeholder="e.g., 25" min="18" max="60">
+                </div>
+
+                <div class="input-group">
+                    <label for="riaCurrentSavings">Current EPF Savings (RM):</label>
+                    <input type="number" id="riaCurrentSavings" placeholder="e.g., 50000" min="0">
+                    <small>Your current EPF Account 1 balance</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="riaMonthlyContribution">Monthly EPF Contribution (RM):</label>
+                    <input type="number" id="riaMonthlyContribution" placeholder="e.g., 500" min="0">
+                    <small>Combined employee + employer contribution</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="riaExpectedReturn">Expected Annual Return (%):</label>
+                    <input type="number" id="riaExpectedReturn" placeholder="6" step="0.1" min="0" max="15">
+                    <small>EPF typically provides 5-6% annual dividends</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="riaTargetTier">Target RIA Tier:</label>
+                    <select id="riaTargetTier">
+                        <option value="basic">Basic Savings (RM390,000)</option>
+                        <option value="adequate" selected>Adequate Savings (RM650,000)</option>
+                        <option value="enhanced">Enhanced Savings (RM1.3 Million)</option>
+                    </select>
+                </div>
+
+                <button class="calculate-btn" onclick="calculateEPFRIA()">
+                    Calculate My RIA Status! 📈
+                </button>
+
+                <div id="riaResult" class="result-section" style="display: none;">
+                    <h3>Your EPF RIA Analysis 📊</h3>
+                    <div class="result-grid">
+                        <div class="result-card">
+                            <h4>🎯 Current RIA Status</h4>
+                            <p class="result-value" id="currentRIAStatus">-</p>
+                        </div>
+                        <div class="result-card">
+                            <h4>💰 Projected Savings at 60</h4>
+                            <p class="result-value" id="projectedSavings">RM 0</p>
+                        </div>
+                        <div class="result-card">
+                            <h4>📊 Additional Monthly Savings Needed</h4>
+                            <p class="result-value" id="additionalSavingsNeeded">RM 0</p>
+                        </div>
+                    </div>
+                    <div class="ria-tier-progress">
+                        <h4>Your Progress Towards RIA Tiers 🎯</h4>
+                        <div id="riaTierProgress"></div>
+                    </div>
+                    <div class="explanation-result">
+                        <h4>Your RIA Roadmap 💡</h4>
+                        <p id="riaExplanation"></p>
                     </div>
                 </div>
             </div>
